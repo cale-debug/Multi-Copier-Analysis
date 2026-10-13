@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Multi-Copier">
+<meta name="theme-color" content="#02060f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Multi-Copier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="vendor/nacl-fast.min.js"></script>
+<script src="vendor/blake2b.js"></script>
+<script src="sealbox.js"></script>
+<style>
+:root {
+  --bg: #02060f; --panel: rgba(3, 14, 32, .82); --line: #0e3a6b; --neon: #2ee6ff; --neon2: #3d8bff;
+  --text: #bfefff; --dim: #4f86a8; --red: #ff3b5c; --green: #39ffb0; --amber: #ffc94d;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: "Share Tech Mono", ui-monospace, monospace; }
+body { min-height: 100vh; padding: max(16px, env(safe-area-inset-top)) 16px 40px; }
+canvas#rain { position: fixed; inset: 0; z-index: 0; opacity: .22; pointer-events: none; }
+main { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; }
+h1 { font-size: 40px; letter-spacing: 10px; text-transform: uppercase; margin: 18px 0 2px; color: var(--neon); text-shadow: 0 0 6px var(--neon), 0 0 22px var(--neon2); font-weight: 400; }
+.sub { color: var(--dim); letter-spacing: 2px; font-size: 14px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--dim); margin: 0 6px 0 10px; vertical-align: middle; }
+.dot.on { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+.dot.off { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.tabs { display: flex; gap: 8px; margin: 18px 0 14px; }
+.tab { flex: 1; text-align: center; padding: 10px 0; border: 1px solid var(--line); color: var(--dim); letter-spacing: 3px; cursor: pointer; background: transparent; font: inherit; border-radius: 6px; }
+.tab.active { color: var(--bg); background: var(--neon); border-color: var(--neon); box-shadow: 0 0 14px var(--neon2); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 14px; box-shadow: inset 0 0 24px rgba(46, 230, 255, .05); }
+.label { color: var(--dim); font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 6px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 10px; }
+.val { font-size: 24px; color: var(--neon); text-shadow: 0 0 8px rgba(46, 230, 255, .6); }
+.val.neg { color: var(--red); text-shadow: 0 0 8px rgba(255, 59, 92, .5); }
+.badge { display: inline-block; margin-bottom: 12px; font-size: 12px; letter-spacing: 3px; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--neon); color: var(--neon); }
+.badge.live { border-color: var(--red); color: var(--red); box-shadow: 0 0 10px var(--red); }
+.modebar { text-align: center; padding: 8px; margin: 0 0 14px; border: 1px solid var(--neon); border-radius: 6px; letter-spacing: 4px; color: var(--neon); font-size: 14px; }
+.modebar.live { border-color: var(--red); color: #1a0006; background: var(--red); box-shadow: 0 0 16px var(--red); }
+table.rep td, table.rep th { padding: 6px 4px; font-size: 13px; }
+input { width: 100%; background: #000; border: 1px solid var(--line); color: var(--neon); font: inherit; font-size: 20px; padding: 12px; border-radius: 6px; outline: none; }
+input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(46, 230, 255, .35); }
+.hint { color: var(--dim); font-size: 13px; margin: 8px 0 12px; word-break: break-all; }
+button.big { width: 100%; padding: 16px; font: inherit; font-size: 20px; letter-spacing: 10px; border-radius: 6px; cursor: pointer; margin-top: 10px; border: 1px solid; }
+.halt { background: var(--red); color: #1a0006; border-color: var(--red); box-shadow: 0 0 16px rgba(255, 59, 92, .5); }
+.resume { background: var(--neon); color: var(--bg); border-color: var(--neon); box-shadow: 0 0 16px var(--neon2); }
+.kill { background: #1a0006; color: var(--red); border-color: var(--red); }
+.lock { background: transparent; color: var(--neon); border-color: var(--neon); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { padding: 10px 14px; border: 1px solid var(--line); background: #000; color: var(--dim); font: inherit; font-size: 17px; border-radius: 6px; cursor: pointer; min-width: 58px; }
+.opt.on { background: var(--neon); color: var(--bg); border-color: var(--neon); box-shadow: 0 0 10px var(--neon2); }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { color: var(--dim); text-align: left; font-weight: 400; letter-spacing: 2px; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+td { padding: 9px 4px; border-bottom: 1px solid rgba(14, 58, 107, .6); vertical-align: top; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+.up { color: var(--green); } .down { color: var(--red); } .muted { color: var(--dim); }
+.feed div { padding: 6px 0; border-bottom: 1px solid rgba(14, 58, 107, .5); font-size: 14px; }
+canvas#eq { width: 100%; height: 120px; display: block; }
+.hidden { display: none; }
+[data-tab="live"] { display: none; } /* paper only: this copy never trades real money */
+#books tr { cursor: pointer; }
+#books tr.sel td { background: rgba(46, 230, 255, .12); color: var(--neon); }
+#books tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--neon); }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+canvas#cmp { width: 100%; height: 140px; display: block; margin-top: 10px; }
+button.small { padding: 10px; font-size: 15px; letter-spacing: 4px; }
+body.viewonly #lockBtn, body.viewonly #haltBtn, body.viewonly #killBtn, body.viewonly #addBook, body.viewonly #removeBook, body.viewonly [data-tab="live"] { display: none; }
+body.viewonly .opt { pointer-events: none; }
+body.viewonly #target { pointer-events: none; }
+.warn { border-color: var(--amber); color: var(--amber); }
+ol { padding-left: 20px; line-height: 1.6; } a { color: var(--neon); }
+.toast { position: fixed; left: 16px; right: 16px; bottom: 20px; z-index: 5; max-width: 600px; margin: auto; padding: 12px 14px; background: #031428; border: 1px solid var(--neon); border-radius: 6px; display: none; }
+@media (max-width: 560px) {
+  h1 { font-size: 28px; letter-spacing: 6px; }
+  .val { font-size: 19px; }
+  .cols { grid-template-columns: 1fr; }
+  .hide-sm { display: none; }
+  button.big { font-size: 17px; letter-spacing: 5px; }
+  .kill { letter-spacing: 2px; }
+}
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<main>
+  <h1>Multi-Copier</h1>
+  <div class="sub"><span id="viewonly" class="muted"></span>watcher // live copy <span class="dot" id="hb"></span><span id="hbtext">CONNECTING</span></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="dash">DASH</button>
+    <button class="tab" data-tab="live">GO LIVE</button>
+    <button class="tab" data-tab="setup">SETUP</button>
+  </div>
+
+  <div class="modebar" id="modebar">PAPER MODE // NO REAL MONEY</div>
+
+  <!-- ===================== DASH ===================== -->
+  <section id="tab-dash">
+    <div class="panel">
+      <div class="label">Traders // tap one to see its book</div>
+      <table class="rep"><thead><tr><th>Trader</th><th class="n">P&amp;L</th><th class="n hide-sm">Return</th><th class="n">W / L</th><th class="n">Open</th><th class="n hide-sm">Copies</th></tr></thead><tbody id="books"></tbody></table>
+      <canvas id="cmp" height="140"></canvas>
+      <div class="hint" id="booksHint">Each trader has a separate paper account with the same starting bank and rules.</div>
+      <button class="big lock small" id="addBook">+ ADD TRADER</button>
+    </div>
+
+    <div class="panel">
+      <span class="badge" id="mode">PAPER</span> <span class="badge" id="bookName">MAIN</span>
+      <div class="grid">
+        <div><div class="label">Bank</div><div class="val" id="bank">-</div></div>
+        <div><div class="label">Exposure</div><div class="val" id="exposure">-</div></div>
+        <div><div class="label">Total P&amp;L</div><div class="val" id="pnl">-</div></div>
+        <div><div class="label">Realized</div><div class="val" id="realized">-</div></div>
+        <div><div class="label">W / L</div><div class="val" id="wl">-</div></div>
+        <div><div class="label">Positions</div><div class="val" id="npos">-</div></div>
+      </div>
+      <canvas id="eq" height="120"></canvas>
+      <div class="hint" id="usline"></div>
+      <div class="hint" id="slipline"></div>
+      <div class="hint" id="acctline"></div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Target // username or 0x wallet</div>
+      <input id="target" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="hint" id="locked">&gt; loading…</div>
+      <div class="hint" id="hisline"></div>
+      <button class="big lock" id="lockBtn">LOCK TARGET</button>
+      <button class="big halt" id="haltBtn">HALT</button>
+      <button class="big lock small" id="removeBook">REMOVE THIS TRADER</button>
+      <button class="big kill" id="killBtn">⛔ KILL SWITCH - CASH OUT ALL TRADERS</button>
+    </div>
+
+    <div class="panel">
+      <div class="hint" style="margin-top:0">These settings apply to every trader.</div>
+      <div class="cols">
+        <div>
+          <div class="label">Size mode</div>
+          <div class="row" id="size">
+            <button class="opt" data-v="1">$1</button><button class="opt" data-v="2">$2</button>
+            <button class="opt" data-v="5">$5</button><button class="opt" data-v="prop">PROP</button>
+          </div>
+          <div class="hint" id="propHint"></div>
+        </div>
+        <div>
+          <div class="label">Min his bet</div>
+          <div class="row" id="minbet">
+            <button class="opt" data-v="0">ALL</button><button class="opt" data-v="100">$100</button>
+            <button class="opt" data-v="1000">$1K</button>
+          </div>
+        </div>
+      </div>
+      <div class="cols" style="margin-top:14px">
+        <div><div class="label">Copy sells</div>
+          <div class="row" id="sells"><button class="opt" data-v="true">ON</button><button class="opt" data-v="false">OFF</button></div></div>
+        <div><div class="label">Polymarket US only</div>
+          <div class="row" id="usonly"><button class="opt" data-v="true">ON</button><button class="opt" data-v="false">OFF</button></div></div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="label">Max slippage (pay at most his price +)</div>
+        <div class="row" id="slipcap">
+          <button class="opt" data-v="0">0&cent;</button><button class="opt" data-v="0.5">&frac12;&cent;</button>
+          <button class="opt" data-v="1">1&cent;</button><button class="opt" data-v="2">2&cent;</button>
+          <button class="opt" data-v="5">5&cent;</button><button class="opt" data-v="-1">ANY</button>
+        </div>
+        <div class="hint">Buys that would cost more than this over his price are skipped.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="label">After costs</div>
+      <table class="rep"><tbody id="costs"></tbody></table>
+      <div class="label" style="margin-top:14px">With filters vs copy at any price</div>
+      <table class="rep"><thead><tr><th></th><th class="n">Positions</th><th class="n">W / L</th><th class="n">Fees</th><th class="n">Net P&amp;L</th></tr></thead><tbody id="compare"></tbody></table>
+      <div class="hint">"Any price" copies every signal the moment we see it, ignoring the delay, spread, liquidity and slippage filters.</div>
+      <div class="label" style="margin-top:14px">Closed trades by</div>
+      <div class="row" id="groupBy">
+        <button class="opt on" data-v="category">SPORT</button><button class="opt" data-v="hold">HOLD TIME</button>
+        <button class="opt" data-v="delay">DELAY</button><button class="opt" data-v="fill">FILL</button>
+      </div>
+      <table class="rep" style="margin-top:8px"><thead><tr><th>Group</th><th class="n">Trades</th><th class="n">Win %</th><th class="n">Fees</th><th class="n">Net</th><th class="n hide-sm">Per $1</th></tr></thead><tbody id="groups"></tbody></table>
+      <div class="label" style="margin-top:14px">Lost to costs</div>
+      <div class="hint" id="lostToCosts"></div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Open positions // <span id="npos2">0</span></div>
+      <table>
+        <thead><tr><th>Side</th><th>Market</th><th class="n">In</th><th class="n">Now</th><th class="n">Cost</th><th class="n hide-sm">P&amp;L</th></tr></thead>
+        <tbody id="positions"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="label">Copy feed</div>
+      <div class="feed" id="feed"></div>
+      <div class="label" style="margin-top:14px">Skipped</div>
+      <div class="hint" id="skipped"></div>
+      <div class="label" style="margin-top:14px">Bot log</div>
+      <div class="feed" id="log"></div>
+    </div>
+  </section>
+
+  <!-- ===================== GO LIVE ===================== -->
+  <section id="tab-live" class="hidden">
+    <div class="panel warn">
+      <div class="label" style="color:var(--amber)">Real money</div>
+      Live trades go through <b>Polymarket US</b>, the version US residents can use. Only trades in markets that also exist on Polymarket US get copied; the dashboard's "on Polymarket US" line shows how many that is.
+      Your keys are encrypted in this browser and stored as GitHub Secrets. They are never saved in the repo, in this page, or on this phone.
+    </div>
+    <div class="panel">
+      <div class="label">Polymarket US key ID</div>
+      <input id="keyId" autocomplete="off" placeholder="from polymarket.us/developer">
+      <div class="label" style="margin-top:12px">Polymarket US secret key</div>
+      <input id="keySecret" type="password" autocomplete="off">
+      <button class="big lock" id="saveKeys">SAVE KEYS</button>
+      <div class="hint" id="keysStatus"></div>
+    </div>
+    <div class="panel">
+      <div class="cols">
+        <div><div class="label">Max per trade ($)</div><input id="maxTrade" inputmode="decimal"></div>
+        <div><div class="label">Max per day ($)</div><input id="dailyCap" inputmode="decimal"></div>
+      </div>
+      <button class="big halt" id="goLive">GO LIVE</button>
+      <button class="big lock" id="goPaper">BACK TO PAPER</button>
+      <div class="hint" id="liveStatus"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SETUP ===================== -->
+  <section id="tab-setup" class="hidden">
+    <div class="panel">
+      <div class="label">GitHub repo</div>
+      <input id="repo" placeholder="owner/repo" autocapitalize="off" spellcheck="false">
+      <div class="label" style="margin-top:12px">GitHub access token</div>
+      <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
+      <button class="big lock" id="saveSetup">CONNECT</button>
+      <div class="hint" id="setupStatus"></div>
+      <div class="hint">The token lets this page change the bot's settings. It stays on this device only. Make a fine-grained token limited to this one repo with <b>Contents</b>, <b>Secrets</b> and <b>Actions</b> set to read and write.</div>
+    </div>
+    <div class="panel">
+      <div class="label">Paper account</div>
+      <div class="row" id="startBank">
+        <button class="opt" data-v="100">$100</button><button class="opt" data-v="500">$500</button>
+        <button class="opt" data-v="1000">$1K</button><button class="opt" data-v="3000">$3K</button><button class="opt" data-v="5000">$5K</button>
+      </div>
+      <div class="cols" style="margin-top:12px">
+        <div><div class="label">Max % in open bets</div><input id="maxExp" inputmode="decimal"></div>
+        <div><div class="label">Halt if down %</div><input id="maxDd" inputmode="decimal"></div>
+      </div>
+      <div class="label" style="margin-top:12px">Copy filters</div>
+      <div class="cols">
+        <div><div class="label">Max delay (sec)</div><input id="fDelay" inputmode="decimal"></div>
+        <div><div class="label">Max spread (&cent;)</div><input id="fSpread" inputmode="decimal"></div>
+        <div><div class="label">Min $ at best price</div><input id="fDepth" inputmode="decimal"></div>
+      </div>
+      <div class="hint">Max price above his is the slippage setting on the DASH tab. Skipped copies and why are listed under Skipped.</div>
+      <div class="label" style="margin-top:12px">PROP size (% of his bet)</div>
+      <input id="propPct" inputmode="decimal">
+      <button class="big kill" id="resetPaper">RESET THIS TRADER'S PAPER ACCOUNT</button>
+      <button class="big lock" id="restartBot">RESTART BOT</button>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const usd = (x) => (x < 0 ? "-$" : "$") + Math.abs(x || 0).toFixed(2);
+const cents = (p) => (p * 100).toFixed(1) + "¢";
+const ago = (ts) => { const s = Math.max(0, Date.now() / 1000 - ts); return s < 90 ? Math.round(s) + "s" : s < 5400 ? Math.round(s / 60) + "m" : Math.round(s / 3600) + "h"; };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => (t.style.display = "none"), 4000); }
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+// ---- repo + token -------------------------------------------------------
+function guessRepo() {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  const path = location.pathname.split("/").filter(Boolean)[0];
+  return m && path ? `${m[1]}/${path}` : "";
+}
+let REPO = store("repo") || guessRepo();
+let TOKEN = store("token") || "";
+const API = () => `https://api.github.com/repos/${REPO}`;
+const hdr = () => (TOKEN ? { Authorization: `Bearer ${TOKEN}`, Accept: "application/vnd.github+json" } : { Accept: "application/vnd.github+json" });
+
+const etags = {}, cached = {};
+let delayed = false;
+async function readJson(path) {
+  if (!REPO) return [null, null];
+  // GitHub API with ETags: unchanged files come back 304, which doesn't count against
+  // the rate limit, so viewers without a token can poll every 15 seconds.
+  const h = { ...hdr(), Accept: "application/vnd.github.raw" };
+  if (etags[path]) h["If-None-Match"] = etags[path];
+  try {
+    const r = await fetch(`${API()}/contents/${path}?ref=data`, { headers: h, cache: "no-store" });
+    if (r.status === 304) { delayed = false; return [cached[path], null]; }
+    if (r.ok) {
+      etags[path] = r.headers.get("ETag"); cached[path] = await r.json(); delayed = false;
+      return [cached[path], null];
+    }
+    if (r.status === 404) return [null, null];
+  } catch (e) {}
+  // Rate limited: fall back to the raw file, which GitHub caches for up to 5 minutes.
+  delayed = true;
+  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/data/${path}`, { cache: "no-store" });
+  return r.ok ? [await r.json(), null] : [cached[path] || null, null];
+}
+
+let settings = null, settingsSha = null, state = null, books = null;
+let BOOK = store("book") || "main";
+const COLORS = ["#2ee6ff", "#39ffb0", "#ffc94d", "#ff7ad9", "#3d8bff", "#ff8a3d", "#b18cff", "#c6ff4d", "#ff3b5c", "#7af7ff"];
+
+// Books: "main" copies settings.target; the rest are settings.books entries with their own target and halt switch.
+function bookList() {
+  if (!settings) return [];
+  const extra = (settings.books || []).filter((b) => b.id && b.id !== "main" && b.target);
+  return [{ id: "main", label: settings.target_label || "Main", target: settings.target, halted: settings.halted }, ...extra];
+}
+function curBook() { return bookList().find((b) => b.id === BOOK) || bookList()[0] || { id: "main" }; }
+function bookPath(id) {
+  const live = settings && settings.mode === "live" && (settings.live_book || "main") === id;
+  return live ? "state-live.json" : id === "main" ? "state-paper.json" : `state-paper-${id}.json`;
+}
+// Settings changes for one book: main's live at the top level, the others inside settings.books.
+function bookPatch(id, changes) {
+  return (cur) => {
+    if (id === "main") {
+      const p = {};
+      if ("target" in changes) p.target = changes.target;
+      if ("label" in changes) p.target_label = changes.label;
+      if ("halted" in changes) p.halted = changes.halted;
+      if ("reset" in changes) p.reset_paper = changes.reset;
+      return p;
+    }
+    return { books: (cur.books || []).map((b) => (b.id === id ? { ...b, ...changes } : b)) };
+  };
+}
+function selectBook(id) {
+  if (id === BOOK) return;
+  BOOK = id; store("book", id); state = null;
+  renderSettings(); renderBooks(); refresh();
+}
+
+async function saveSettings(patch, msg) {
+  if (!TOKEN) { toast("Connect your GitHub token in SETUP first"); showTab("setup"); return false; }
+  const [cur] = await readJson("settings.json");
+  const meta = await fetch(`${API()}/contents/settings.json?ref=data&t=${Date.now()}`, { headers: hdr(), cache: "no-store" });
+  const sha = meta.ok ? (await meta.json()).sha : null;
+  const base = cur || settings || {};
+  const next = { ...base, ...(typeof patch === "function" ? patch(base) : patch) };
+  const body = { message: msg || "Update settings", branch: "data", content: btoa(unescape(encodeURIComponent(JSON.stringify(next, null, 1)))) };
+  if (sha) body.sha = sha;
+  const r = await fetch(`${API()}/contents/settings.json`, { method: "PUT", headers: hdr(), body: JSON.stringify(body) });
+  if (!r.ok) { toast("Save failed: " + r.status); return false; }
+  settings = next; settingsSha = (await r.json()).content.sha;
+  renderSettings();
+  toast("Saved. The bot picks this up within 30 seconds.");
+  return true;
+}
+
+// ---- rendering ----------------------------------------------------------
+function setOpts(rowId, value) {
+  document.querySelectorAll(`#${rowId} .opt`).forEach((b) => b.classList.toggle("on", String(b.dataset.v) === String(value)));
+}
+function renderSettings() {
+  if (!settings) return;
+  const bk = curBook();
+  if (document.activeElement !== $("target")) $("target").value = bk.label || bk.target || "";
+  $("locked").textContent = `> locked: ${bk.label || ""} [${(bk.target || "").slice(0, 12)}…]`;
+  $("bookName").textContent = (bk.label || bk.id).toUpperCase();
+  $("removeBook").classList.toggle("hidden", bk.id === "main");
+  setOpts("size", settings.size_mode); setOpts("minbet", settings.min_his_bet); setOpts("sells", settings.copy_sells); setOpts("usonly", settings.us_only !== false); setOpts("slipcap", settings.max_slip_cents ?? 1);
+  setOpts("startBank", settings.paper_start_bank);
+  $("propHint").textContent = settings.size_mode === "prop" ? `PROP = ${settings.prop_pct}% of his dollar size` : "";
+  $("haltBtn").textContent = bk.halted ? "RESUME THIS TRADER" : "HALT THIS TRADER";
+  $("haltBtn").className = "big " + (bk.halted ? "resume" : "halt");
+  if (document.activeElement !== $("maxTrade")) $("maxTrade").value = settings.live_max_trade;
+  if (document.activeElement !== $("dailyCap")) $("dailyCap").value = settings.live_daily_cap;
+  if (document.activeElement !== $("propPct")) $("propPct").value = settings.prop_pct;
+  if (document.activeElement !== $("maxExp")) $("maxExp").value = settings.max_exposure_pct ?? 50;
+  if (document.activeElement !== $("fDelay")) $("fDelay").value = settings.max_delay_s ?? 60;
+  if (document.activeElement !== $("fSpread")) $("fSpread").value = settings.max_spread_cents ?? 5;
+  if (document.activeElement !== $("fDepth")) $("fDepth").value = settings.min_depth_usd ?? 20;
+  if (document.activeElement !== $("maxDd")) $("maxDd").value = settings.max_drawdown_pct ?? 25;
+}
+
+function slip(t) {
+  const d = Math.round((t.price - (t.his_price || 0)) * 1000) / 10;
+  return d > 0 ? `+${d}¢ vs him` : d < 0 ? `${d}¢ vs him` : "same price";
+}
+
+let groupBy = "category";
+function bucket(r) {
+  if (groupBy === "category") return (r.category || "other").toUpperCase();
+  if (groupBy === "fill") return r.partial ? "PARTIAL FILL" : "FULL FILL";
+  if (groupBy === "delay") return r.delay < 5 ? "under 5s" : r.delay < 15 ? "5-15s" : r.delay < 60 ? "15-60s" : "60s+";
+  const h = (r.closed - (r.opened || r.closed)) / 3600;
+  return h < 1 ? "under 1h" : h < 6 ? "1-6h" : h < 24 ? "6-24h" : "1d+";
+}
+function book(st) {
+  // Gross = what contracts sold/settled/are worth minus what they cost; net = gross - fees.
+  const t = st.totals || {};
+  const open = Object.values(st.positions || {});
+  const openVal = open.reduce((a, p) => a + p.shares * (p.cur ?? p.avg), 0);
+  const openCost = open.reduce((a, p) => a + p.cost, 0);
+  const fees = (t.fees_in || 0) + (t.fees_out || 0);
+  const gross = (t.gross_out || 0) + openVal - (t.gross_in || 0);
+  return { t, fees, gross, net: gross - fees, openVal, unreal: openVal - openCost, n: (st.wins || 0) + (st.losses || 0) + open.length,
+           wl: `${st.wins || 0} / ${st.losses || 0}` };
+}
+function renderReport() {
+  const b = book(state), t = b.t;
+  const rows = [
+    ["Gross P&L (before fees)", b.gross], ["Entry fees", -(t.fees_in || 0)], ["Exit fees", -(t.fees_out || 0)],
+    ["Net P&L", b.net], ["  realized (closed)", state.realized], ["  unrealized (open, at mid)", b.unreal],
+    ["Slippage vs his prices (inside gross)", -(t.slip || 0)], ["Settlement payouts received", t.settled || 0],
+  ];
+  const roc = state.start_bank ? (100 * b.net) / state.start_bank : 0;
+  const per = t.gross_in ? (100 * b.net) / t.gross_in : 0;
+  $("costs").innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td class="n ${v < 0 ? "down" : v > 0 ? "up" : ""}">${usd(v)}</td></tr>`).join("") +
+    `<tr><td>Return on ${usd(state.start_bank)} bank</td><td class="n">${roc.toFixed(2)}%</td></tr>` +
+    `<tr><td>Return per $ wagered</td><td class="n">${per.toFixed(1)}%</td></tr>`;
+  const sh = state.shadow ? book(state.shadow) : null;
+  const line = (name, x) => `<tr><td>${name}</td><td class="n">${x.n}</td><td class="n">${x.wl}</td><td class="n">${usd(x.fees)}</td><td class="n ${x.net < 0 ? "down" : "up"}">${usd(x.net)}</td></tr>`;
+  $("compare").innerHTML = line("With filters (you)", b) + (sh ? line("Any price", sh) : `<tr><td colspan="5" class="muted">Starts with his next trade</td></tr>`);
+  const closed = state.closed || [];
+  const g = {};
+  closed.forEach((r) => { const k = bucket(r); const x = (g[k] = g[k] || { n: 0, w: 0, fees: 0, net: 0, cost: 0 });
+    x.n++; x.w += r.net >= 0; x.fees += r.fees_in + r.fees_out; x.net += r.net; x.cost += r.gross_in; });
+  $("groups").innerHTML = Object.entries(g).sort((a, b) => b[1].n - a[1].n).map(([k, x]) =>
+    `<tr><td>${esc(k)}</td><td class="n">${x.n}</td><td class="n">${Math.round((100 * x.w) / x.n)}%</td><td class="n">${usd(x.fees)}</td><td class="n ${x.net < 0 ? "down" : "up"}">${usd(x.net)}</td><td class="n hide-sm">${x.cost ? ((100 * x.net) / x.cost).toFixed(1) + "%" : "-"}</td></tr>`).join("")
+    || '<tr><td colspan="6" class="muted">No closed trades yet</td></tr>';
+  const lost = closed.filter((r) => r.gross >= 0 && r.net < 0);
+  const losers = closed.filter((r) => r.net < 0).length;
+  $("lostToCosts").innerHTML = closed.length
+    ? `${lost.length} of ${closed.length} closed trades made money before costs but lost after fees and slippage. ${losers} lost overall.` +
+      lost.slice(0, 8).map((r) => `<div>${esc(r.outcome)} · ${esc(r.title)}: gross ${usd(r.gross)}, fees ${usd(r.fees_in + r.fees_out)}, net ${usd(r.net)}</div>`).join("")
+    : "Nothing closed yet.";
+}
+
+function renderState() {
+  if (!state) return;
+  const posVal = Object.values(state.positions).reduce((a, p) => a + p.shares * (p.cur ?? p.avg), 0);
+  const equity = state.bank + posVal;
+  const pnl = equity - state.start_bank;
+  $("bank").textContent = usd(state.bank);
+  $("exposure").textContent = usd(posVal);
+  $("pnl").textContent = usd(pnl); $("pnl").classList.toggle("neg", pnl < 0);
+  $("realized").textContent = usd(state.realized); $("realized").classList.toggle("neg", state.realized < 0);
+  const w = state.wins, l = state.losses;
+  $("wl").textContent = `${w} / ${l}` + (w + l ? ` (${Math.round((100 * w) / (w + l))}%)` : "");
+  const n = Object.keys(state.positions).length;
+  $("npos").textContent = n; $("npos2").textContent = n;
+  const live = state.mode === "live";
+  $("mode").textContent = live ? "LIVE" : "PAPER"; $("mode").classList.toggle("live", live);
+  const us = state.us || { checked: 0, available: 0 };
+  $("usline").textContent = us.checked ? `on Polymarket US: ${us.available} of ${us.checked} of his buys (${Math.round((100 * us.available) / us.checked)}%) · started ${new Date(state.started_at * 1000).toLocaleDateString()} with ${usd(state.start_bank)}` : `started with ${usd(state.start_bank)}`;
+
+  const sl = state.slip || { n: 0, cents: 0, skipped: 0 };
+  const feeTxt = `fees paid ${usd(state.fees || 0)} (included in P&L)`;
+  $("slipline").textContent = sl.n || sl.skipped ? `slippage: avg ${(sl.cents / Math.max(1, sl.n)).toFixed(2)}¢ vs his price over ${sl.n} buys · ${sl.skipped} skipped for price · ${feeTxt}` : feeTxt;
+
+  const alive = Date.now() / 1000 - state.heartbeat < 600;
+  const halted = curBook().halted;
+  $("hb").className = "dot " + (alive ? (halted ? "off" : "on") : "off");
+  $("hbtext").textContent = (delayed ? "UP TO 5 MIN DELAYED · " : "") + (!alive ? `OFFLINE · last seen ${ago(state.heartbeat)} ago` : halted ? "HALTED" : `TRACKING · updated ${ago(state.heartbeat)} ago`);
+
+  const rows = Object.values(state.positions).sort((a, b) => b.cost - a.cost).slice(0, 300);
+  $("positions").innerHTML = rows.map((p) => {
+    const now = p.cur ?? p.avg, val = p.shares * now, pl = val - p.cost;
+    return `<tr><td>${esc(p.outcome)}</td><td>${esc(p.title)}${p.us === false ? ' <span class="muted">· not on US</span>' : ""}</td><td class="n">${cents(p.avg)}</td><td class="n">${cents(now)}</td><td class="n">${usd(p.cost)}</td><td class="n hide-sm ${pl >= 0 ? "up" : "down"}">${usd(pl)}</td></tr>`;
+  }).join("") || `<tr><td colspan="6" class="muted">No open positions yet</td></tr>`;
+
+  $("feed").innerHTML = state.trades.slice(0, 40).map((t) => {
+    const cls = t.side === "BUY" ? "" : (t.pnl >= 0 ? "up" : "down");
+    const extra = t.side === "BUY" ? ` · he paid ${cents(t.his_price || 0)} for ${usd(t.his_usd)} · ${slip(t)} · ${t.delay}s late` : ` · P&L ${usd(t.pnl)}`;
+    const fee = t.fee ? ` · fee ${usd(t.fee)}` : "";
+    return `<div class="${cls}"><span class="muted">${ago(t.ts)}</span> ${t.side} ${usd(t.usd)} ${esc(t.outcome)} @ ${cents(t.price)} · ${esc(t.title)}<span class="muted">${fee}${extra}</span></div>`;
+  }).join("") || '<div class="muted">Waiting for his next trade…</div>';
+  $("skipped").textContent = Object.entries(state.skipped || {}).map(([k, v]) => `${k}: ${v}`).join(" · ") || "none";
+  $("log").innerHTML = (state.log || []).slice(0, 12).map(([ts, m]) => `<div><span class="muted">${ago(ts)}</span> ${esc(m)}</div>`).join("");
+  const his = state.his || {};
+  const hp = his.pnl || {};
+  const sgn = (x) => (x === undefined ? "?" : usd(x));
+  $("hisline").textContent = his.since ? `> his record since we started copying: ${his.buys} buys · ${his.sells} sells · ${usd(his.usd)} traded · P&L ${sgn(hp.since_copy)}  |  today ${sgn(hp.day)} · month ${sgn(hp.month)} · all-time ${sgn(hp.all)}` : "";
+  drawEquity(state.equity || []);
+  renderReport();
+  const wantLive = settings && settings.mode === "live" && (settings.live_book || "main") === BOOK;
+  $("modebar").textContent = live ? "LIVE MODE // REAL MONEY" : wantLive ? "LIVE REQUESTED // STILL PAPER: " + (state.live_error || "starting up") : "PAPER MODE // NO REAL MONEY";
+  $("modebar").classList.toggle("live", live);
+  $("modebar").classList.toggle("warn", !live && wantLive);
+  const a = state.account;
+  $("acctline").innerHTML = live && a ? `Polymarket US account: cash ${usd(a.cash)} · buying power ${usd(a.buying_power)} · positions ${usd(a.positions_value)} · synced ${ago(a.synced_at)} ago` +
+    ((a.outside || []).length ? `<br>Not placed by the bot (left alone): ${a.outside.map((o) => esc(o.title || o.slug) + " " + o.qty).join(", ")}` : "") : "";
+  $("liveStatus").textContent = live ? `Live mode is ON. Synced with your Polymarket US account ${a ? ago(a.synced_at) + " ago" : "soon"}.`
+    : wantLive ? "Live requested but still on paper: " + (state.live_error || "the bot is restarting.") : "Paper mode. Nothing real is being bought.";
+}
+
+function renderBooks() {
+  const list = bookList();
+  if (!list.length) return;
+  const rows = {};
+  ((books && books.books) || []).forEach((x) => (rows[x.id] = x));
+  if (!list.some((b) => b.id === BOOK)) { BOOK = "main"; store("book", BOOK); }
+  $("books").innerHTML = list.map((b, i) => {
+    const x = rows[b.id];
+    const ret = x && x.start_bank ? (100 * x.pnl) / x.start_bank : 0;
+    const wl = x ? `${x.wins} / ${x.losses}` : "-";
+    const tag = (x && x.mode === "live" ? ' <span class="down">LIVE</span>' : "") + (b.halted ? ' <span class="muted">· halted</span>' : "");
+    return `<tr data-id="${esc(b.id)}" class="${b.id === BOOK ? "sel" : ""}"><td><span class="swatch" style="background:${COLORS[i % COLORS.length]}"></span>${esc(b.label || b.id)}${tag}</td>` +
+      (x ? `<td class="n ${x.pnl < 0 ? "down" : "up"}">${usd(x.pnl)}</td><td class="n hide-sm">${ret.toFixed(2)}%</td><td class="n">${wl}</td><td class="n">${x.open}</td><td class="n hide-sm">${x.copies}</td>`
+         : '<td class="n muted" colspan="5">starting up…</td>') + "</tr>";
+  }).join("");
+  document.querySelectorAll("#books tr").forEach((tr) => (tr.onclick = () => selectBook(tr.dataset.id)));
+  $("booksHint").textContent = books && books.updated
+    ? `Each trader has a separate paper account with the same starting bank and rules. Table updated ${ago(books.updated)} ago.`
+    : "Each trader has a separate paper account with the same starting bank and rules.";
+  drawCompare(list, rows);
+}
+
+function drawCompare(list, rows) {
+  // P&L over time for every trader on one chart, so they can be compared at a glance.
+  const c = $("cmp"), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = 140;
+  c.width = w * dpr; c.height = h * dpr; const g = c.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, w, h);
+  const lines = list.map((b, i) => {
+    const x = rows[b.id];
+    return x && (x.curve || []).length > 1 ? { color: COLORS[i % COLORS.length], pts: x.curve.map((p) => [p[0], p[1] - x.start_bank]), sel: b.id === BOOK } : null;
+  }).filter(Boolean);
+  if (!lines.length) return;
+  const all = lines.flatMap((l) => l.pts);
+  const t0 = Math.min(...all.map((p) => p[0])), t1 = Math.max(...all.map((p) => p[0])) || t0 + 1;
+  const lo = Math.min(0, ...all.map((p) => p[1])), hi = Math.max(0, ...all.map((p) => p[1])), span = hi - lo || 1;
+  const X = (t) => ((t - t0) / (t1 - t0 || 1)) * (w - 4) + 2, Y = (v) => h - 8 - ((v - lo) / span) * (h - 16);
+  g.strokeStyle = "rgba(79,134,168,.5)"; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(0, Y(0)); g.lineTo(w, Y(0)); g.stroke(); g.setLineDash([]);
+  lines.sort((a, b) => a.sel - b.sel).forEach((l) => {
+    g.beginPath(); l.pts.forEach((p, i) => (i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1]))));
+    g.strokeStyle = l.color; g.lineWidth = l.sel ? 2.5 : 1.5; g.globalAlpha = l.sel ? 1 : 0.7;
+    g.shadowColor = l.color; g.shadowBlur = l.sel ? 8 : 0; g.stroke();
+  });
+  g.globalAlpha = 1; g.shadowBlur = 0;
+}
+
+function drawEquity(pts) {
+  const c = $("eq"), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = 120;
+  c.width = w * dpr; c.height = h * dpr; const g = c.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, w, h);
+  if (pts.length < 2) return;
+  const ys = pts.map((p) => p[1]), lo = Math.min(...ys), hi = Math.max(...ys), span = hi - lo || 1;
+  const x = (i) => (i / (pts.length - 1)) * (w - 4) + 2, y = (v) => h - 8 - ((v - lo) / span) * (h - 20);
+  g.beginPath(); pts.forEach((p, i) => (i ? g.lineTo(x(i), y(p[1])) : g.moveTo(x(i), y(p[1]))));
+  g.strokeStyle = "#2ee6ff"; g.lineWidth = 2; g.shadowColor = "#2ee6ff"; g.shadowBlur = 8; g.stroke();
+  g.shadowBlur = 0; g.lineTo(x(pts.length - 1), h); g.lineTo(x(0), h); g.closePath();
+  const grad = g.createLinearGradient(0, 0, 0, h); grad.addColorStop(0, "rgba(46,230,255,.25)"); grad.addColorStop(1, "rgba(46,230,255,0)");
+  g.fillStyle = grad; g.fill();
+}
+
+async function refresh() {
+  if (!REPO) { $("hbtext").textContent = "SET UP IN SETUP TAB"; return; }
+  try {
+    const [s, sha] = await readJson("settings.json"); if (s) { settings = s; settingsSha = sha; renderSettings(); }
+    const [bk] = await readJson("books.json"); if (bk) books = bk;
+    renderBooks();
+    const want = BOOK, path = bookPath(want);
+    let [st] = await readJson(path);
+    if (!st && path === "state-live.json") [st] = await readJson(want === "main" ? "state-paper.json" : `state-paper-${want}.json`);
+    if (st && want === BOOK) { state = st; renderState(); }
+  } catch (e) { $("hbtext").textContent = "CAN'T REACH GITHUB"; }
+}
+
+// ---- controls -----------------------------------------------------------
+function showTab(name) {
+  if (name === "live") checkKeys();
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+  ["dash", "live", "setup"].forEach((n) => $("tab-" + n).classList.toggle("hidden", n !== name));
+}
+document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => showTab(t.dataset.tab)));
+document.querySelectorAll("#size .opt").forEach((b) => (b.onclick = () => saveSettings({ size_mode: b.dataset.v }, `Size ${b.dataset.v}`)));
+document.querySelectorAll("#minbet .opt").forEach((b) => (b.onclick = () => saveSettings({ min_his_bet: Number(b.dataset.v) }, `Min bet ${b.dataset.v}`)));
+document.querySelectorAll("#sells .opt").forEach((b) => (b.onclick = () => saveSettings({ copy_sells: b.dataset.v === "true" }, "Copy sells")));
+document.querySelectorAll("#slipcap .opt").forEach((b) => (b.onclick = () => saveSettings({ max_slip_cents: Number(b.dataset.v) }, `Max slippage ${b.dataset.v}`)));
+document.querySelectorAll("#usonly .opt").forEach((b) => (b.onclick = () => saveSettings({ us_only: b.dataset.v === "true" }, "US only")));
+document.querySelectorAll("#startBank .opt").forEach((b) => (b.onclick = () => saveSettings({ paper_start_bank: Number(b.dataset.v) }, "Paper bank")));
+$("haltBtn").onclick = () => { const b = curBook(); saveSettings(bookPatch(b.id, { halted: !b.halted }), `${b.halted ? "Resume" : "Halt"} ${b.label}`); };
+$("killBtn").onclick = () => { if (confirm("Sell every open position for EVERY trader now and halt them all?")) saveSettings({ kill: true }, "Kill switch"); };
+$("resetPaper").onclick = () => { const b = curBook(); if (confirm(`Wipe ${b.label}'s paper account and start over?`)) saveSettings(bookPatch(b.id, { reset: true }), `Reset paper ${b.label}`); };
+$("maxExp").onchange = () => saveSettings({ max_exposure_pct: Number($("maxExp").value) || 50 }, "Max exposure");
+document.querySelectorAll("#groupBy .opt").forEach((b) => (b.onclick = () => { groupBy = b.dataset.v; setOpts("groupBy", groupBy); if (state) renderReport(); }));
+$("fDelay").onchange = () => saveSettings({ max_delay_s: Number($("fDelay").value) || 60 }, "Max delay");
+$("fSpread").onchange = () => saveSettings({ max_spread_cents: Number($("fSpread").value) || 5 }, "Max spread");
+$("fDepth").onchange = () => saveSettings({ min_depth_usd: Number($("fDepth").value) || 0 }, "Min liquidity");
+$("maxDd").onchange = () => saveSettings({ max_drawdown_pct: Number($("maxDd").value) || 25 }, "Max drawdown");
+$("propPct").onchange = () => saveSettings({ prop_pct: Number($("propPct").value) || 1 }, "Prop %");
+$("maxTrade").onchange = () => saveSettings({ live_max_trade: Number($("maxTrade").value) || 1 }, "Live max trade");
+$("dailyCap").onchange = () => saveSettings({ live_daily_cap: Number($("dailyCap").value) || 10 }, "Live daily cap");
+
+async function resolveTarget(text) {
+  text = text.trim().replace(/^@/, "");
+  if (/^0x[0-9a-fA-F]{40}$/.test(text)) return [text.toLowerCase(), text.slice(0, 8)];
+  try {
+    const r = await fetch(`https://gamma-api.polymarket.com/public-search?q=${encodeURIComponent(text)}&search_profiles=true&limit_per_type=10`);
+    const j = await r.json();
+    const p = (j.profiles || []).find((x) => (x.name || "").toLowerCase() === text.toLowerCase());
+    if (p && p.proxyWallet) return [p.proxyWallet.toLowerCase(), p.name];
+  } catch (e) {}
+  return [null, null];
+}
+$("lockBtn").onclick = async () => {
+  const [wallet, label] = await resolveTarget($("target").value);
+  if (!wallet) { toast("Couldn't find that trader. Paste their 0x wallet instead."); return; }
+  const b = curBook();
+  if (confirm(`Copy ${label} (${wallet.slice(0, 10)}…) in this book from now on?`)) saveSettings(bookPatch(b.id, { target: wallet, label }), `Target ${label}`);
+};
+$("addBook").onclick = async () => {
+  if (bookList().length >= 10) return toast("10 traders is the limit.");
+  const text = prompt("Trader to add: Polymarket username or 0x wallet");
+  if (!text) return;
+  const [wallet, label] = await resolveTarget(text);
+  if (!wallet) return toast("Couldn't find that trader. Paste their 0x wallet instead.");
+  if (bookList().some((b) => (b.target || "").toLowerCase() === wallet)) return toast(`${label} is already being copied.`);
+  let id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 32) || "trader";
+  const taken = new Set(["main", ...(settings.books || []).map((b) => b.id)]);
+  for (let n = 2; taken.has(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
+  if (await saveSettings((cur) => ({ books: [...(cur.books || []), { id, label, target: wallet, halted: false }] }), `Add ${label}`)) selectBook(id);
+};
+$("removeBook").onclick = () => {
+  const b = curBook();
+  if (b.id === "main" || !confirm(`Stop copying ${b.label}? Its paper history is kept in the repo.`)) return;
+  saveSettings((cur) => ({ books: (cur.books || []).filter((x) => x.id !== b.id) }), `Remove ${b.label}`).then((ok) => ok && selectBook("main"));
+};
+
+async function putSecret(name, value) {
+  const k = await (await fetch(`${API()}/actions/secrets/public-key`, { headers: hdr() })).json();
+  const pk = Uint8Array.from(atob(k.key), (c) => c.charCodeAt(0));
+  const sealed = window.sealBox(new TextEncoder().encode(value), pk);
+  const encrypted_value = btoa(String.fromCharCode(...sealed));
+  const r = await fetch(`${API()}/actions/secrets/${name}`, { method: "PUT", headers: hdr(), body: JSON.stringify({ encrypted_value, key_id: k.key_id }) });
+  if (!r.ok) throw new Error(`${name}: ${r.status}`);
+}
+$("saveKeys").onclick = async () => {
+  if (!TOKEN) { toast("Connect your GitHub token in SETUP first"); return showTab("setup"); }
+  const id = $("keyId").value.trim(), sec = $("keySecret").value.trim();
+  if (!id || !sec) return toast("Enter both keys");
+  try {
+    await putSecret("POLYMARKET_KEY_ID", id); await putSecret("POLYMARKET_SECRET_KEY", sec);
+    $("keyId").value = ""; $("keySecret").value = "";
+    $("keysStatus").textContent = "Keys saved as GitHub Secrets. Now tap GO LIVE when you're ready.";
+    setTimeout(checkKeys, 1500);
+  } catch (e) { $("keysStatus").textContent = "Saving keys failed (" + e.message + "). Check the token has Secrets: read and write."; }
+};
+$("goLive").onclick = async () => {
+  const b = curBook();
+  const typed = prompt(`Real money, copying ${b.label}. Max ${usd(settings.live_max_trade)} per trade, ${usd(settings.live_daily_cap)} per day. Type LIVE to confirm.`);
+  if (typed === "LIVE" && (await saveSettings((cur) => ({ ...bookPatch(b.id, { halted: false })(cur), mode: "live", live_book: b.id }), `Go live with ${b.label}`))) restartBot();
+};
+$("goPaper").onclick = () => saveSettings({ mode: "paper" }, "Back to paper");
+
+async function restartBot() {
+  const r = await fetch(`${API()}/actions/workflows/bot.yml/runs?status=in_progress`, { headers: hdr() });
+  for (const run of (await r.json()).workflow_runs || []) await fetch(`${API()}/actions/runs/${run.id}/cancel`, { method: "POST", headers: hdr() });
+  const d = await fetch(`${API()}/actions/workflows/bot.yml/dispatches`, { method: "POST", headers: hdr(), body: JSON.stringify({ ref: "main" }) });
+  toast(d.ok ? "Bot restarting. Give it a minute." : "Restart failed: " + d.status);
+}
+$("restartBot").onclick = () => (TOKEN ? restartBot() : toast("Connect your GitHub token first"));
+async function checkAccess() {
+  // Each permission the dashboard needs, tested with a harmless read.
+  const ok = async (url) => { try { return (await fetch(url, { headers: hdr() })).status; } catch (e) { return 0; } };
+  const repo = await ok(API());
+  if (repo === 401) return "That token was rejected by GitHub (expired, deleted, or pasted wrong). Make a new one.";
+  if (repo !== 200) return `Couldn't open ${REPO} (${repo}). Check the repo name is owner/Multi-Copier-Analysis.`;
+  const checks = [["Secrets", `${API()}/actions/secrets/public-key`], ["Actions", `${API()}/actions/workflows`],
+                  ["Contents", `${API()}/contents/settings.json?ref=data`]];
+  const bad = [];
+  for (const [name, url] of checks) if ((await ok(url)) !== 200) bad.push(name);
+  return bad.length ? `Connected, but the token is missing: ${bad.join(", ")}. Edit the token on GitHub and set those to Read and write.`
+    : "Connected. Contents, Secrets and Actions all reachable.";
+}
+async function checkKeys() {
+  if (!TOKEN) return ($("keysStatus").textContent = "Connect your GitHub token in SETUP first.");
+  try {
+    const r = await fetch(`${API()}/actions/secrets`, { headers: hdr() });
+    if (!r.ok) return ($("keysStatus").textContent = `Can't see saved keys (${r.status}): the token needs Secrets access.`);
+    const names = ((await r.json()).secrets || []).reduce((m, x) => ((m[x.name] = x.updated_at), m), {});
+    const have = ["POLYMARKET_KEY_ID", "POLYMARKET_SECRET_KEY"].filter((n) => names[n]);
+    $("keysStatus").textContent = have.length === 2 ? `Polymarket keys are saved (last changed ${new Date(names.POLYMARKET_SECRET_KEY).toLocaleString()}).`
+      : have.length ? `Only ${have[0]} is saved. Enter both keys and SAVE KEYS again.` : "No Polymarket keys saved yet.";
+  } catch (e) { $("keysStatus").textContent = "Couldn't check saved keys: " + e.message; }
+}
+$("saveSetup").onclick = async () => {
+  REPO = $("repo").value.trim();
+  const t = $("token").value.trim();
+  if (t && !t.startsWith("•")) TOKEN = t;  // the dots are just the saved token's placeholder
+  store("repo", REPO); store("token", TOKEN);
+  $("setupStatus").textContent = "Checking…";
+  $("setupStatus").textContent = await checkAccess();
+  checkKeys();
+  refresh();
+};
+$("repo").value = REPO; $("token").value = TOKEN ? "••••••••" : "";
+$("token").onfocus = () => { if ($("token").value.startsWith("•")) $("token").value = ""; };
+
+// ---- background rain ----------------------------------------------------
+(function rain() {
+  const c = $("rain"), g = c.getContext("2d"); let cols, drops;
+  const chars = "0123456789ABCDEFアイウエオカキクケコサシスセソ";
+  function size() { c.width = innerWidth; c.height = innerHeight; cols = Math.floor(c.width / 18); drops = Array(cols).fill(0).map(() => Math.random() * -50); }
+  size(); addEventListener("resize", size);
+  setInterval(() => {
+    g.fillStyle = "rgba(2,6,15,.18)"; g.fillRect(0, 0, c.width, c.height);
+    g.fillStyle = "#2e8bff"; g.font = "15px Share Tech Mono, monospace";
+    drops.forEach((d, i) => { g.fillText(chars[(Math.random() * chars.length) | 0], i * 18, d * 18); drops[i] = d * 18 > c.height && Math.random() > 0.975 ? 0 : d + 1; });
+  }, 70);
+})();
+
+refresh();
+setInterval(refresh, 15000);
+document.body.classList.toggle("viewonly", !TOKEN);
+if (!TOKEN) $("viewonly").textContent = "view only · ";
+</script>
+</body>
+</html>

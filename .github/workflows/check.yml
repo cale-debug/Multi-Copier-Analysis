@@ -1,0 +1,25 @@
+name: Check trader
+on:
+  workflow_dispatch:
+    inputs:
+      wallets:
+        description: Usernames or 0x wallets to size up, comma-separated
+        required: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Check each trader
+        env:
+          WALLETS: ${{ inputs.wallets }}
+        run: |
+          IFS=',' read -ra LIST <<< "$WALLETS"
+          for w in "${LIST[@]}"; do
+            python tools/check_trader.py "$(echo "$w" | xargs)" | tee -a "$GITHUB_STEP_SUMMARY" || true
+            echo | tee -a "$GITHUB_STEP_SUMMARY"
+          done

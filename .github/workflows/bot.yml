@@ -1,0 +1,36 @@
+name: Copy bot
+
+# Runs the copier around the clock on GitHub's free runners (free and unlimited
+# for public repos). Each run lasts ~5h40m; the schedule queues the next one so
+# there is no gap. Only one run is ever active at a time.
+on:
+  # The schedule goes on once the repo is public (private repos only get 2,000 free
+  # Actions minutes a month; a round-the-clock bot needs about 43,000).
+  workflow_dispatch:
+    inputs:
+      run_minutes:
+        description: How long this run lasts (default 340)
+        default: "340"
+
+concurrency:
+  group: multi-copier
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m bot.main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_MINUTES: ${{ inputs.run_minutes || '340' }}
