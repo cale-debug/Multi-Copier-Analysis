@@ -1,6 +1,6 @@
 {
- "target": "0x7c37b52eb226bcb9411375ec48b0169663fb6aeb",
- "target_label": "Diabolical-Prize",
+ "target": "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2",
+ "target_label": "CyberScore.live",
  "size_mode": "scaled",
  "prop_pct": 1.0,
  "min_his_bet": 0,
@@ -20,7 +20,7 @@
  "paper_start_bank": 3000.0,
  "max_exposure_pct": 50.0,
  "max_drawdown_pct": 25.0,
- "reset_paper": false,
+ "reset_paper": true,
  "books": [
   {
    "id": "kch-temp",
@@ -59,12 +59,6 @@
    "halted": false
   },
   {
-   "id": "coldblooded",
-   "label": "ColdBlooded",
-   "target": "0xbcc321b6336117432f4e9d2d28b20d8b6795ac9c",
-   "halted": false
-  },
-  {
    "id": "0x0x23kjookhaiuohduoayh8c9",
    "label": "0x0x23kjookhaiuohduoayh8c9",
    "target": "0x9c3ce009c9b039956665cecc4cd14de862b5e8c9",
@@ -75,11 +69,19 @@
    "label": "ethanaz",
    "target": "0xf28e42d20e4826f2b10a24bc952001697947cab2",
    "halted": false
+  },
+  {
+   "id": "thehighlife",
+   "label": "THEHIGHLIFE",
+   "target": "0x8c0b024c17831a0dde038547b7e791ae6a0d7aa5",
+   "halted": false
   }
  ],
  "roster_dropped": {
   "0xd38ad20037839959d89165cf448568d584b28d26": 1791870361,
-  "0xf68a281980f8c13828e84e147e3822381d6e5b1b": 1791870361
+  "0xf68a281980f8c13828e84e147e3822381d6e5b1b": 1791870361,
+  "0x7c37b52eb226bcb9411375ec48b0169663fb6aeb": 1791910675,
+  "0xbcc321b6336117432f4e9d2d28b20d8b6795ac9c": 1791910675
  },
  "min_bet": 1.0,
  "max_bet": 5.0
