@@ -1,7 +1,7 @@
 {
  "target": "0x7c37b52eb226bcb9411375ec48b0169663fb6aeb",
  "target_label": "Diabolical-Prize",
- "size_mode": "1",
+ "size_mode": "scaled",
  "prop_pct": 1.0,
  "min_his_bet": 0,
  "us_only": true,
@@ -80,5 +80,7 @@
  "roster_dropped": {
   "0xd38ad20037839959d89165cf448568d584b28d26": 1791870361,
   "0xf68a281980f8c13828e84e147e3822381d6e5b1b": 1791870361
- }
+ },
+ "min_bet": 1.0,
+ "max_bet": 5.0
 }
