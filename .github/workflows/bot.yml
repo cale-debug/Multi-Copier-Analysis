@@ -4,8 +4,8 @@ name: Copy bot
 # for public repos). Each run lasts ~5h40m; the schedule queues the next one so
 # there is no gap. Only one run is ever active at a time.
 on:
-  # The schedule goes on once the repo is public (private repos only get 2,000 free
-  # Actions minutes a month; a round-the-clock bot needs about 43,000).
+  schedule:
+    - cron: "*/20 * * * *"
   workflow_dispatch:
     inputs:
       run_minutes:
