@@ -8,7 +8,7 @@ Runs once a day. A trader comes off the roster when they:
   - are down for the month on the leaderboard (fell off),
   - stopped betting in markets that are on Polymarket US, or
   - lost money in our own paper copy after a fair trial (MIN_TRIAL_DAYS and MIN_TRIAL_CLOSED).
-Each one is replaced by the best eligible trader from the Sports leaderboard who
+Each one is replaced by the best eligible trader from the Sports/Esports boards who
 isn't already on it. Dropped traders sit out COOLDOWN_DAYS before they can return.
 A report of the ranking and every change goes to roster.json for the dashboard.
 """
@@ -123,7 +123,7 @@ def slug(label, taken):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--pool", type=int, default=150)
+    ap.add_argument("--pool", type=int, default=300)
     args = ap.parse_args()
     repo = Repo(os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"])
     now = int(time.time())
@@ -145,9 +145,13 @@ def main():
             kept.append(b)
         print(f"- {b.get('label')}: {'OUT, ' + why if why else 'stays'}")
 
-    # Candidates from the Sports leaderboard, best first.
-    scan.CATEGORY = "SPORTS"
-    boards = {p: scan.board(p, args.pool) for p in ("ALL", "MONTH", "WEEK")}
+    # Candidates from the Sports and Esports leaderboards (what Polymarket US lists), best first.
+    boards = {p: {} for p in ("ALL", "MONTH", "WEEK")}
+    for cat in ("SPORTS", "ESPORTS"):
+        scan.CATEGORY = cat
+        for p in boards:
+            for w, row in scan.board(p, args.pool).items():
+                boards[p].setdefault(w, row)
     have = {b["target"].lower() for b in kept}
     cands = []
     for w in boards["MONTH"]:
