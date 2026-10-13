@@ -477,3 +477,16 @@ def test_roster_drops_quiet_losing_and_non_us_traders():
     assert roster.why_drop({}, good, {**trial, "started_at": now - 86400}, now) is None   # too soon to judge
     assert roster.eligible({**good, "flip": 0.9}, now) == "sells most buys within an hour"
     assert roster.slug("Kch-Temp", {"kch-temp"}) == "kch-temp-2"
+
+
+def test_scaled_sizing_follows_his_conviction(tmp_path, monkeypatch):
+    s = {"size_mode": "scaled", "min_bet": 1, "max_bet": 5}
+    assert bet_size(s, 500, None) == 1                    # no history yet: minimum
+    assert bet_size(s, 100, 200) == 1                     # smaller than his usual: minimum
+    assert bet_size(s, 600, 200) == 3                     # 3x his usual
+    assert bet_size(s, 50_000, 200) == 5                  # capped
+    bot = _bot(tmp_path, monkeypatch)
+    bot.settings.update(size_mode="scaled", min_bet=1, max_bet=5)
+    bot.state["his_sizes"] = [100.0] * 30
+    bot.copy(dict(TRADE, usdcSize=400), 1)
+    assert abs(bot.state["positions"]["A"]["gross_in"] - 4) < 1e-9

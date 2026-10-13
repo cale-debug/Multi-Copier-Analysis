@@ -150,7 +150,7 @@ ol { padding-left: 20px; line-height: 1.6; } a { color: var(--neon); }
           <div class="label">Size mode</div>
           <div class="row" id="size">
             <button class="opt" data-v="1">$1</button><button class="opt" data-v="2">$2</button>
-            <button class="opt" data-v="5">$5</button><button class="opt" data-v="prop">PROP</button>
+            <button class="opt" data-v="5">$5</button><button class="opt" data-v="prop">PROP</button><button class="opt" data-v="scaled">$1-5</button>
           </div>
           <div class="hint" id="propHint"></div>
         </div>
@@ -388,7 +388,8 @@ function renderSettings() {
   $("removeBook").classList.toggle("hidden", bk.id === "main");
   setOpts("size", settings.size_mode); setOpts("minbet", settings.min_his_bet); setOpts("sells", settings.copy_sells); setOpts("usonly", settings.us_only !== false); setOpts("slipcap", settings.max_slip_cents ?? 1);
   setOpts("startBank", settings.paper_start_bank);
-  $("propHint").textContent = settings.size_mode === "prop" ? `PROP = ${settings.prop_pct}% of his dollar size` : "";
+  $("propHint").textContent = settings.size_mode === "prop" ? `PROP = ${settings.prop_pct}% of his dollar size`
+    : settings.size_mode === "scaled" ? `$${settings.min_bet ?? 1} when he bets his usual size, scaling up with bigger bets to at most $${settings.max_bet ?? 5}` : "";
   $("haltBtn").textContent = bk.halted ? "RESUME THIS TRADER" : "HALT THIS TRADER";
   $("haltBtn").className = "big " + (bk.halted ? "resume" : "halt");
   if (document.activeElement !== $("maxTrade")) $("maxTrade").value = settings.live_max_trade;

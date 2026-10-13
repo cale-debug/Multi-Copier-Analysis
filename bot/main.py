@@ -208,9 +208,12 @@ class Bot:
             self.state["his"] = {"since": int(time.time()), "buys": 0, "sells": 0, "usd": 0.0}
             self.his_stats_at = 0
             log(self.state, f"Now copying {self.settings.get('target_label') or self.target()}")
+            self.state.pop("his_sizes", None)
             self.dirty = True
         if not self.target():
             return
+        if "his_sizes" not in self.state and self.settings.get("size_mode") == "scaled":
+            self.seed_sizes()
         trades = pm.new_trades(self.target(), cur["ts"])
         if trades:
             L.info("%d trade rows from target since %d", len(trades), cur["ts"])
@@ -239,6 +242,7 @@ class Bot:
         on_us = us_slug is not None
         his_size = float(t.get("size") or 0)
         if side == "BUY":
+            self.note_size(his_usd)
             self.state["us"]["checked"] += 1
             self.state["us"]["available"] += on_us
             held = self.state["positions"].get(asset)
@@ -260,7 +264,7 @@ class Bot:
                 return skip(self.state, "other side of a market we hold")
             if asset not in self.state["positions"] and len(self.state["positions"]) >= MAX_POSITIONS:
                 return skip(self.state, "too many open positions")
-            usd = bet_size(self.settings, his_usd)
+            usd = bet_size(self.settings, his_usd, self.his_median())
             equity = self.state["bank"] + exposure(self.state)
             if equity < self.state["start_bank"] * (1 - float(self.settings.get("max_drawdown_pct", 25)) / 100):
                 self.halt(f"Account down {self.settings.get('max_drawdown_pct', 25)}% from start; halted")
@@ -317,6 +321,27 @@ class Bot:
                 return skip(self.state, "no buyers")
             sell(self.state, asset, fraction, bid, "copied sell")
             L.info("SELL %.0f%% of %s @ %.3f", fraction * 100, t.get("title"), bid)
+
+    def note_size(self, his_usd: float) -> None:
+        sizes = self.state.setdefault("his_sizes", [])
+        sizes.append(round(his_usd, 2))
+        del sizes[:-300]
+
+    def his_median(self) -> Optional[float]:
+        """His usual buy size (median of his recent buys), for SCALED sizing; None until there's enough to tell."""
+        sizes = self.state.get("his_sizes") or []
+        if len(sizes) < 20:
+            return None
+        return sorted(sizes)[len(sizes) // 2]
+
+    def seed_sizes(self) -> None:
+        """Start his usual size from his last few days of buys, so sizing is right from the first copy."""
+        try:
+            rows = pm.new_trades(self.target(), int(time.time()) - 3 * 86400)
+        except Exception as exc:
+            return L.warning("Couldn't load his recent bet sizes: %s", exc)
+        self.state["his_sizes"] = [round(float(t.get("usdcSize") or 0), 2) for t in rows
+                                   if str(t.get("side")).upper() == "BUY"][-300:]
 
     def price_filter(self, b: dict, his_price: float, delay: int) -> Optional[str]:
         """Why this copy is too late, too thin, too wide or too expensive to take; None if it's fine."""

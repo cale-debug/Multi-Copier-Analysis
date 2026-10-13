@@ -19,7 +19,9 @@ TAKER_FEE = 0.0695  # Polymarket US standard taker fee coefficient (docs.polymar
 DEFAULT_SETTINGS = {
     "target": "0x4f1d5ae26fc31472966e951af3183308736d8de2",  # e46m3
     "target_label": "e46m3",
-    "size_mode": "1",          # "1" | "2" | "5" | "prop"
+    "size_mode": "scaled",     # "1" | "2" | "5" | "prop" | "scaled"
+    "min_bet": 1.0,            # SCALED: his usual-size bet copies at min_bet, bigger ones scale up...
+    "max_bet": 5.0,            # ...to at most max_bet
     "prop_pct": 1.0,           # PROP: copy this % of his dollar size
     "min_his_bet": 0,          # skip his buys smaller than this ($)
     "us_only": True,           # only copy markets that also trade on Polymarket US
@@ -67,8 +69,15 @@ def new_state(bank: float) -> dict:
     }
 
 
-def bet_size(settings: dict, his_usd: float) -> float:
+def bet_size(settings: dict, his_usd: float, his_median: Optional[float] = None) -> float:
     mode = str(settings.get("size_mode", "1"))
+    if mode == "scaled":
+        # Conviction sizing: a bet his usual size gets min_bet; twice his usual gets 2x, up to max_bet.
+        # Traders bet $5 to $5,000, so this compares each one only against their own habits.
+        lo, hi = float(settings.get("min_bet", 1)), float(settings.get("max_bet", 5))
+        if not his_median or his_median <= 0:
+            return lo
+        return round(min(hi, max(lo, lo * his_usd / his_median)), 2)
     if mode == "prop":
         return round(his_usd * float(settings.get("prop_pct", 1.0)) / 100, 2)
     try:
