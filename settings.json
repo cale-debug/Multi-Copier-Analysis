@@ -35,22 +35,50 @@
    "halted": false
   },
   {
-   "id": "johnny234",
-   "label": "johnny234",
-   "target": "0xd38ad20037839959d89165cf448568d584b28d26",
-   "halted": false
-  },
-  {
    "id": "0x20d6",
    "label": "0x20D6",
    "target": "0x20d6436849f930584892730c7f96ebb2ac763856",
    "halted": false
   },
   {
-   "id": "nooserac",
-   "label": "Nooserac",
-   "target": "0xf68a281980f8c13828e84e147e3822381d6e5b1b",
+   "id": "momijidan",
+   "label": "momijidan",
+   "target": "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0",
+   "halted": false
+  },
+  {
+   "id": "askilika",
+   "label": "askilika",
+   "target": "0x0979bad57d7a1403db89cbcd9c52bf43f2138d9b",
+   "halted": false
+  },
+  {
+   "id": "juice-fruit",
+   "label": "juice-fruit",
+   "target": "0x5fdd66ffd0325d4e8d1d86fbec50caa31770a747",
+   "halted": false
+  },
+  {
+   "id": "coldblooded",
+   "label": "ColdBlooded",
+   "target": "0xbcc321b6336117432f4e9d2d28b20d8b6795ac9c",
+   "halted": false
+  },
+  {
+   "id": "0x0x23kjookhaiuohduoayh8c9",
+   "label": "0x0x23kjookhaiuohduoayh8c9",
+   "target": "0x9c3ce009c9b039956665cecc4cd14de862b5e8c9",
+   "halted": false
+  },
+  {
+   "id": "ethanaz",
+   "label": "ethanaz",
+   "target": "0xf28e42d20e4826f2b10a24bc952001697947cab2",
    "halted": false
   }
- ]
+ ],
+ "roster_dropped": {
+  "0xd38ad20037839959d89165cf448568d584b28d26": 1791870361,
+  "0xf68a281980f8c13828e84e147e3822381d6e5b1b": 1791870361
+ }
 }
