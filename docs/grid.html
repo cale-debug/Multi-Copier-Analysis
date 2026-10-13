@@ -39,31 +39,34 @@ function guessRepo() {
   return m && path ? `${m[1]}/${path}` : "";
 }
 const REPO = ls("repo") || guessRepo(), TOKEN = ls("token") || "";
-async function settings() {
+async function read(path) {
   const h = { Accept: "application/vnd.github.raw", ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}) };
   try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/settings.json?ref=data`, { headers: h, cache: "no-store" });
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=data`, { headers: h, cache: "no-store" });
     if (r.ok) return r.json();
   } catch (e) {}
-  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/data/settings.json`, { cache: "no-store" });
+  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/data/${path}`, { cache: "no-store" });
   return r.ok ? r.json() : null;
 }
 let shown = "";
 async function load() {
   if (!REPO) { document.getElementById("status").textContent = "Open the full dashboard's SETUP tab first."; return; }
-  const s = await settings();
+  const s = await read("settings.json"), sum = (await read("books.json")) || { books: [] };
   if (!s) { document.getElementById("status").textContent = "Couldn't read the traders yet."; return; }
+  // Best paper P&L first, so the top row is the three traders most worth copying right now.
+  const pnl = {}; sum.books.forEach((x) => (pnl[x.id] = x.pnl));
   const books = [{ id: "main", label: s.target_label || "Main" },
-                 ...(s.books || []).filter((b) => b.id && b.id !== "main" && b.target)].slice(0, 6);
+                 ...(s.books || []).filter((b) => b.id && b.id !== "main" && b.target)]
+    .sort((a, b) => (pnl[b.id] ?? -1e9) - (pnl[a.id] ?? -1e9));
   const key = books.map((b) => b.id).join(",");
-  document.getElementById("status").textContent = `${books.length} traders · each panel updates every 15 seconds`;
+  document.getElementById("status").textContent = `${books.length} traders, best paper P&L first · panels update every 15 seconds`;
   if (key === shown) return;   // only rebuild when the list of traders changes
   shown = key;
   document.getElementById("grid").innerHTML = books.map((b) =>
     `<iframe title="${b.label.replace(/"/g, "")}" src="index.html?embed&book=${encodeURIComponent(b.id)}" loading="lazy"></iframe>`).join("");
 }
 load();
-setInterval(load, 60000);
+setInterval(load, 300000);  // re-rank every 5 minutes
 </script>
 </body>
 </html>

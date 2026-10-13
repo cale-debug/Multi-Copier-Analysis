@@ -84,6 +84,11 @@ def score(w, name, lb):
     oc = defaultdict(set)
     for b in buys:
         oc[b.get("conditionId")].add(b.get("asset"))
+    sells = defaultdict(list)
+    for a in acts:
+        if a.get("side") == "SELL":
+            sells[a.get("asset")].append(int(f(a.get("timestamp"))))
+    flips = sum(any(0 < x - int(f(b.get("timestamp"))) <= 3600 for x in sells[b.get("asset")]) for b in buys)
     sample = buys[:80]
     us = sum(on_us(b) for b in sample)
     cats = defaultdict(int)
@@ -101,6 +106,7 @@ def score(w, name, lb):
         "median_price": st.median(f(b.get("price")) for b in buys),
         "both_sides": sum(len(v) > 1 for v in oc.values()) / max(1, len(oc)),
         "us": us / len(sample), "topics": top,
+        "last_trade": max(ts) if ts else 0, "flip": flips / len(buys),
     }
 
 
