@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#02060f">
+<title>Multi-Copier Grid</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #02060f; --line: #0e3a6b; --neon: #2ee6ff; --neon2: #3d8bff; --dim: #4f86a8; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: #bfefff; font-family: "Share Tech Mono", ui-monospace, monospace; }
+body { padding: 16px; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+h1 { margin: 0; font-weight: 400; font-size: 28px; letter-spacing: 8px; color: var(--neon); text-shadow: 0 0 6px var(--neon), 0 0 22px var(--neon2); }
+a { color: var(--neon); letter-spacing: 2px; }
+.hint { color: var(--dim); font-size: 13px; }
+/* Three across and two down on a wide screen; fewer columns as it narrows. */
+#grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1150px) { #grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { #grid { grid-template-columns: 1fr; } }
+iframe { width: 100%; height: calc(50vh - 40px); min-height: 520px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+         box-shadow: 0 0 18px rgba(46, 230, 255, .08); }
+</style>
+</head>
+<body>
+<header>
+  <h1>MULTI-COPIER</h1>
+  <span class="hint" id="status">loading traders…</span>
+  <a href="index.html">FULL DASHBOARD →</a>
+</header>
+<div id="grid"></div>
+<script>
+// Each panel is the phone dashboard for one trader (index.html?embed&book=<id>); this page only lays them out.
+const ls = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+function guessRepo() {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  const path = location.pathname.split("/").filter(Boolean)[0];
+  return m && path ? `${m[1]}/${path}` : "";
+}
+const REPO = ls("repo") || guessRepo(), TOKEN = ls("token") || "";
+async function settings() {
+  const h = { Accept: "application/vnd.github.raw", ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}) };
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/settings.json?ref=data`, { headers: h, cache: "no-store" });
+    if (r.ok) return r.json();
+  } catch (e) {}
+  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/data/settings.json`, { cache: "no-store" });
+  return r.ok ? r.json() : null;
+}
+let shown = "";
+async function load() {
+  if (!REPO) { document.getElementById("status").textContent = "Open the full dashboard's SETUP tab first."; return; }
+  const s = await settings();
+  if (!s) { document.getElementById("status").textContent = "Couldn't read the traders yet."; return; }
+  const books = [{ id: "main", label: s.target_label || "Main" },
+                 ...(s.books || []).filter((b) => b.id && b.id !== "main" && b.target)].slice(0, 6);
+  const key = books.map((b) => b.id).join(",");
+  document.getElementById("status").textContent = `${books.length} traders · each panel updates every 15 seconds`;
+  if (key === shown) return;   // only rebuild when the list of traders changes
+  shown = key;
+  document.getElementById("grid").innerHTML = books.map((b) =>
+    `<iframe title="${b.label.replace(/"/g, "")}" src="index.html?embed&book=${encodeURIComponent(b.id)}" loading="lazy"></iframe>`).join("");
+}
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

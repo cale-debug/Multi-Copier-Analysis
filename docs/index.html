@@ -64,6 +64,11 @@ td.n, th.n { text-align: right; white-space: nowrap; }
 canvas#eq { width: 100%; height: 120px; display: block; }
 .hidden { display: none; }
 [data-tab="live"] { display: none; } /* paper only: this copy never trades real money */
+/* grid.html shows six of these side by side, one trader each */
+body.embed { padding: 10px 10px 30px; }
+body.embed canvas#rain, body.embed .tabs, body.embed #tradersPanel, body.embed #rulesPanel, body.embed #killBtn,
+body.embed #removeBook, body.embed .sub { display: none; }
+body.embed h1 { font-size: 22px; letter-spacing: 5px; margin: 4px 0 10px; }
 #books tr { cursor: pointer; }
 #books tr.sel td { background: rgba(46, 230, 255, .12); color: var(--neon); }
 #books tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--neon); }
@@ -89,7 +94,7 @@ ol { padding-left: 20px; line-height: 1.6; } a { color: var(--neon); }
 <body>
 <canvas id="rain"></canvas>
 <main>
-  <h1>Multi-Copier</h1>
+  <h1 id="title">Multi-Copier</h1>
   <div class="sub"><span id="viewonly" class="muted"></span>watcher // live copy <span class="dot" id="hb"></span><span id="hbtext">CONNECTING</span></div>
 
   <div class="tabs">
@@ -102,12 +107,13 @@ ol { padding-left: 20px; line-height: 1.6; } a { color: var(--neon); }
 
   <!-- ===================== DASH ===================== -->
   <section id="tab-dash">
-    <div class="panel">
+    <div class="panel" id="tradersPanel">
       <div class="label">Traders // tap one to see its book</div>
       <table class="rep"><thead><tr><th>Trader</th><th class="n">P&amp;L</th><th class="n hide-sm">Return</th><th class="n">W / L</th><th class="n">Open</th><th class="n hide-sm">Copies</th></tr></thead><tbody id="books"></tbody></table>
       <canvas id="cmp" height="140"></canvas>
       <div class="hint" id="booksHint">Each trader has a separate paper account with the same starting bank and rules.</div>
       <button class="big lock small" id="addBook">+ ADD TRADER</button>
+      <a class="big lock small" href="grid.html" style="display:block;text-align:center;text-decoration:none">SIDE-BY-SIDE VIEW</a>
     </div>
 
     <div class="panel">
@@ -137,7 +143,7 @@ ol { padding-left: 20px; line-height: 1.6; } a { color: var(--neon); }
       <button class="big kill" id="killBtn">⛔ KILL SWITCH - CASH OUT ALL TRADERS</button>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="rulesPanel">
       <div class="hint" style="margin-top:0">These settings apply to every trader.</div>
       <div class="cols">
         <div>
@@ -314,7 +320,10 @@ async function readJson(path) {
 }
 
 let settings = null, settingsSha = null, state = null, books = null;
-let BOOK = store("book") || "main";
+const QS = new URLSearchParams(location.search);
+const EMBED = QS.has("embed");                      // one panel of grid.html
+let BOOK = QS.get("book") || store("book") || "main";
+if (EMBED) document.body.classList.add("embed");
 const COLORS = ["#2ee6ff", "#39ffb0", "#ffc94d", "#ff7ad9", "#3d8bff", "#ff8a3d", "#b18cff", "#c6ff4d", "#ff3b5c", "#7af7ff"];
 
 // Books: "main" copies settings.target; the rest are settings.books entries with their own target and halt switch.
@@ -344,7 +353,7 @@ function bookPatch(id, changes) {
 }
 function selectBook(id) {
   if (id === BOOK) return;
-  BOOK = id; store("book", id); state = null;
+  BOOK = id; if (!EMBED) store("book", id); state = null;
   renderSettings(); renderBooks(); refresh();
 }
 
@@ -375,6 +384,7 @@ function renderSettings() {
   if (document.activeElement !== $("target")) $("target").value = bk.label || bk.target || "";
   $("locked").textContent = `> locked: ${bk.label || ""} [${(bk.target || "").slice(0, 12)}…]`;
   $("bookName").textContent = (bk.label || bk.id).toUpperCase();
+  if (EMBED) $("title").textContent = bk.label || bk.id;
   $("removeBook").classList.toggle("hidden", bk.id === "main");
   setOpts("size", settings.size_mode); setOpts("minbet", settings.min_his_bet); setOpts("sells", settings.copy_sells); setOpts("usonly", settings.us_only !== false); setOpts("slipcap", settings.max_slip_cents ?? 1);
   setOpts("startBank", settings.paper_start_bank);
@@ -564,8 +574,7 @@ async function refresh() {
   if (!REPO) { $("hbtext").textContent = "SET UP IN SETUP TAB"; return; }
   try {
     const [s, sha] = await readJson("settings.json"); if (s) { settings = s; settingsSha = sha; renderSettings(); }
-    const [bk] = await readJson("books.json"); if (bk) books = bk;
-    renderBooks();
+    if (!EMBED) { const [bk] = await readJson("books.json"); if (bk) books = bk; renderBooks(); }
     const want = BOOK, path = bookPath(want);
     let [st] = await readJson(path);
     if (!st && path === "state-live.json") [st] = await readJson(want === "main" ? "state-paper.json" : `state-paper-${want}.json`);
