@@ -46,7 +46,8 @@
    "id": "askilika",
    "label": "askilika",
    "target": "0x0979bad57d7a1403db89cbcd9c52bf43f2138d9b",
-   "halted": false
+   "halted": false,
+   "pinned": true
   },
   {
    "id": "juice-fruit",
@@ -64,13 +65,15 @@
    "id": "thehighlife",
    "label": "THEHIGHLIFE",
    "target": "0x8c0b024c17831a0dde038547b7e791ae6a0d7aa5",
-   "halted": false
+   "halted": false,
+   "pinned": true
   },
   {
    "id": "theowalcott",
    "label": "theowalcott",
    "target": "0x7ad71d79a3bb90d0a87a06500fa0fe11663842aa",
-   "halted": false
+   "halted": false,
+   "pinned": true
   },
   {
    "id": "sinenooneei",
