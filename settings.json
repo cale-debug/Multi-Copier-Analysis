@@ -1,7 +1,7 @@
 {
  "target": "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2",
  "target_label": "CyberScore.live",
- "size_mode": "scaled",
+ "size_mode": "5",
  "min_bet": 1.0,
  "max_bet": 5.0,
  "prop_pct": 1.0,
