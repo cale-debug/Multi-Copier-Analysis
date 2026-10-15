@@ -8,6 +8,7 @@ Runs once a day. A trader comes off the roster when they:
   - are down for the month on the leaderboard (fell off),
   - stopped betting in markets that are on Polymarket US, or
   - lost money in our own paper copy after a fair trial (MIN_TRIAL_DAYS and MIN_TRIAL_CLOSED).
+Books with "pinned": true in settings.books are never dropped (Cale picks those by hand).
 Each one is replaced by the best eligible trader from the Sports/Esports boards who
 isn't already on it. Dropped traders sit out COOLDOWN_DAYS before they can return.
 A report of the ranking and every change goes to roster.json for the dashboard.
@@ -136,14 +137,13 @@ def main():
     roster += [b for b in settings.get("books") or [] if b.get("id") != "main" and b.get("target")]
     changes, kept = [], []
     for b in roster:
-        r = evaluate(b["target"], b.get("label"))
-        why = why_drop(b, r, paper.get(b["id"]), now)
+        why = None if b.get("pinned") else why_drop(b, evaluate(b["target"], b.get("label")), paper.get(b["id"]), now)
         if why:
             changes.append({"out": b.get("label"), "wallet": b["target"], "why": why})
             dropped[b["target"]] = now
         else:
             kept.append(b)
-        print(f"- {b.get('label')}: {'OUT, ' + why if why else 'stays'}")
+        print(f"- {b.get('label')}: {'OUT, ' + why if why else 'pinned' if b.get('pinned') else 'stays'}")
 
     # Candidates from the Sports and Esports leaderboards (what Polymarket US lists), best first.
     boards = {p: {} for p in ("ALL", "MONTH", "WEEK")}
