@@ -1,25 +1,25 @@
 {
- "updated": 1792159143,
+ "updated": 1792241959,
  "changes": [
   {
-   "out": "ethanaz",
-   "wallet": "0xf28e42d20e4826f2b10a24bc952001697947cab2",
-   "why": "down $66,263 this month"
+   "out": "CyberScore.live",
+   "wallet": "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2",
+   "why": "only 0% of recent bets on Polymarket US"
   },
   {
-   "out": "SineNooneEI",
-   "wallet": "0x38337de21ff0bb0a11a40761507d51e318d633d1",
-   "why": "only 2% of recent bets on Polymarket US"
+   "out": "momijidan",
+   "wallet": "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0",
+   "why": "only 0% of recent bets on Polymarket US"
   },
   {
-   "in": "raybanman",
-   "wallet": "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62",
-   "why": "95% win rate, 100% on Polymarket US, $567,993 this month"
+   "in": "humbleboy",
+   "wallet": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
+   "why": "63% win rate, 75% on Polymarket US, $50,588 this month"
   },
   {
-   "in": "vibing123",
-   "wallet": "0x6b97ebe911d7f2e5e3e8c4a0faad4a5c7c0b8d30",
-   "why": "88% win rate, 100% on Polymarket US, $83,070 this month"
+   "in": "mooseborzoii",
+   "wallet": "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d",
+   "why": "71% win rate, 62% on Polymarket US, $1,356,291 this month"
   }
  ],
  "ranking": [
@@ -28,76 +28,32 @@
    "wallet": "0xc9ae00eda811041a059f3eec9356b24067c1b9e0",
    "win": 0.9583333333333334,
    "us": 1.0,
-   "pnl_month": 469000.77230499854,
+   "pnl_month": 468997.64394599356,
    "pnl_all": 462353.748038,
    "per_day": 384.64620562545076,
    "rank": 146.875,
    "skip": "no trades for 3+ days"
   },
   {
-   "name": "raybanman",
-   "wallet": "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62",
-   "win": 0.9523809523809523,
-   "us": 1.0,
-   "pnl_month": 567993.126868995,
-   "pnl_all": 649585.217706,
-   "per_day": 12000.0,
-   "rank": 146.42857142857144,
-   "skip": null
-  },
-  {
-   "name": "vibing123",
-   "wallet": "0x6b97ebe911d7f2e5e3e8c4a0faad4a5c7c0b8d30",
-   "win": 0.876,
-   "us": 1.0,
-   "pnl_month": 83070.30161758036,
-   "pnl_all": 228496.768525,
-   "per_day": 269.10857783591854,
-   "rank": 140.7,
-   "skip": null
-  },
-  {
-   "name": "0xF201A19b43471261A3c1Ba9247335d55270e527e-1763824114616",
-   "wallet": "0xf201a19b43471261a3c1ba9247335d55270e527e",
-   "win": 0.714,
-   "us": 0.975,
-   "pnl_month": 99743.57198699986,
-   "pnl_all": 574684.999769,
-   "per_day": 957.7652144995011,
-   "rank": 126.40749999999998,
-   "skip": null
-  },
-  {
-   "name": "Zywoo123",
-   "wallet": "0xc44f432b014f36679e13615f95996eac32bbd49f",
-   "win": 0.91,
-   "us": 0.75,
-   "pnl_month": 126982.01178999995,
-   "pnl_all": 195083.641738,
-   "per_day": 89.93760578598598,
-   "rank": 119.375,
-   "skip": null
-  },
-  {
    "name": "TeGeeLP",
    "wallet": "0xe1000ddb5f5025849765e29d051dfff78f5d4d41",
    "win": 0.5091743119266054,
    "us": 1.0,
-   "pnl_month": 14537.837199,
+   "pnl_month": 14537.837199000001,
    "pnl_all": 558367.696489,
    "per_day": 26.784817472629264,
    "rank": 110.54101457096598,
    "skip": "no trades for 3+ days"
   },
   {
-   "name": "JohnLKellyJr",
-   "wallet": "0xddc38b82423310f5bbf2e2dc58745661a624029c",
-   "win": 0.934,
-   "us": 0.5375,
-   "pnl_month": 23870.74164676074,
-   "pnl_all": 310025.443919,
-   "per_day": 641.1683512177746,
-   "rank": 100.32625000000002,
+   "name": "humbleboy",
+   "wallet": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
+   "win": 0.628,
+   "us": 0.75,
+   "pnl_month": 50587.76611975149,
+   "pnl_all": 142230.341447,
+   "per_day": 69.42904255421733,
+   "rank": 100.04545454545453,
    "skip": null
   },
   {
@@ -105,22 +61,11 @@
    "wallet": "0x103721386ec40df5ab93df0bd0964e8fe70b5b09",
    "win": 0.875,
    "us": 0.5,
-   "pnl_month": 157047.56037348192,
+   "pnl_month": 161069.65041973034,
    "pnl_all": 211522.171581,
    "per_day": 115.82794188225768,
    "rank": 93.75,
-   "skip": null
-  },
-  {
-   "name": "PEYZ-BIGGEST-FAN",
-   "wallet": "0xdaef2be2a19ad331737d06545f85615b094554e9",
-   "win": 0.71,
-   "us": 0.575,
-   "pnl_month": 98713.73259927508,
-   "pnl_all": 335746.413635,
-   "per_day": 668.8134753529849,
-   "rank": 91.9125,
-   "skip": null
+   "skip": "no trades for 3+ days"
   },
   {
    "name": "Noprajsk",
@@ -134,68 +79,46 @@
    "skip": "no trades for 3+ days"
   },
   {
-   "name": "para-Vision",
-   "wallet": "0x676c1bb692c76b57b06f1b93817515acfa5ce139",
-   "win": 0.5776173285198556,
-   "us": 0.825,
-   "pnl_month": 122421.69960599994,
-   "pnl_all": 218570.686021,
-   "per_day": 230.41843347467798,
-   "rank": 86.3198049623341,
-   "skip": "win rate 58%"
+   "name": "mooseborzoii",
+   "wallet": "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d",
+   "win": 0.712,
+   "us": 0.625,
+   "pnl_month": 1356291.4572531178,
+   "pnl_all": 1300882.015641,
+   "per_day": 1001.0427528675705,
+   "rank": 85.24089122809471,
+   "skip": null
   },
   {
-   "name": "johnbaster",
-   "wallet": "0x31864feb9d25dee93728c6225ba891530967e9ca",
-   "win": 0.604,
-   "us": 1.0,
-   "pnl_month": 79271.86462000008,
-   "pnl_all": 942056.017733,
-   "per_day": 95.56105621511857,
-   "rank": 82.60527236654012,
-   "skip": "sells most buys within an hour"
+   "name": "primm",
+   "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
+   "win": 0.744,
+   "us": 0.475,
+   "pnl_month": 726265.4140369995,
+   "pnl_all": 3381170.726454,
+   "per_day": 98.55295966857004,
+   "rank": 85.02,
+   "skip": null
   },
   {
    "name": "0xbFAB152aFA43741b41BE0f355F862be2630cf067-1779364275266",
    "wallet": "0xbfab152afa43741b41be0f355f862be2630cf067",
    "win": 0.702,
-   "us": 0.4875,
-   "pnl_month": 33755.613427965,
-   "pnl_all": 73501.414152,
-   "per_day": 19.206111811580932,
-   "rank": 76.2559148361585,
+   "us": 0.4625,
+   "pnl_month": 36827.08502192499,
+   "pnl_all": 74255.110656,
+   "per_day": 17.99042010129606,
+   "rank": 74.29177926348255,
    "skip": "sells most buys within an hour"
-  },
-  {
-   "name": "humbleboy",
-   "wallet": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
-   "win": 0.628,
-   "us": 0.3875,
-   "pnl_month": 44449.837132499,
-   "pnl_all": 131707.440302,
-   "per_day": 34.96362002962196,
-   "rank": 71.03227272727273,
-   "skip": null
-  },
-  {
-   "name": "Future-Tarot-Trader",
-   "wallet": "0x10ef48324b3ebc06d9137794c70285e8e37a7d7b",
-   "win": 0.578,
-   "us": 0.525,
-   "pnl_month": 56850.82773499999,
-   "pnl_all": 317151.048036,
-   "per_day": 83.21166196032806,
-   "rank": 68.90120092035407,
-   "skip": "win rate 58%"
   },
   {
    "name": "Sisyphus-",
    "wallet": "0xf3ce7f04dde4f8c5aed19a20e5ecd8520e5ca57a",
    "win": 0.972,
    "us": 0.1875,
-   "pnl_month": 119287.75863014993,
-   "pnl_all": 409281.417549,
-   "per_day": 19.869221885395984,
+   "pnl_month": 128204.13079999996,
+   "pnl_all": 416843.666412,
+   "per_day": 19.51660266546194,
    "rank": 67.7875,
    "skip": "only 19% on Polymarket US"
   },
@@ -204,110 +127,77 @@
    "wallet": "0xc646a607c992b4fff5b124d6ec8efd2dd970e394",
    "win": 0.562,
    "us": 0.375,
-   "pnl_month": 34029.92768700001,
+   "pnl_month": 34029.927687,
    "pnl_all": 77257.095998,
    "per_day": 20.75692630282145,
    "rank": 65.95113636363637,
    "skip": "no trades for 3+ days"
   },
   {
-   "name": "Tokenn",
-   "wallet": "0x55d94368a50750f264cf42096e9034315d9c832c",
-   "win": 0.684,
-   "us": 0.275,
-   "pnl_month": 137220.69572700004,
-   "pnl_all": 209112.000544,
-   "per_day": 58.898676552191446,
-   "rank": 65.25500000000001,
-   "skip": null
-  },
-  {
-   "name": "mpyh",
-   "wallet": "0x695d8d90deae05ea1e07d3804130ff9564fd0d7c",
-   "win": 0.862,
-   "us": 0.2,
-   "pnl_month": 14208.392420137492,
-   "pnl_all": 107830.844395,
-   "per_day": 137.69670388515075,
-   "rank": 65.16999999999999,
-   "skip": "only 20% on Polymarket US"
-  },
-  {
    "name": "fantasy7788",
    "wallet": "0x0259b2054f046fe0ee8f3e075fdb85fc3ba9769e",
-   "win": 0.987012987012987,
+   "win": 0.9871794871794872,
    "us": 0.15,
-   "pnl_month": 158938.28410299998,
-   "pnl_all": 71652.748683,
-   "per_day": 10.530839637007807,
-   "rank": 64.57792207792208,
+   "pnl_month": 202644.14190799996,
+   "pnl_all": 114482.580413,
+   "per_day": 10.432590252772968,
+   "rank": 64.58333333333334,
+   "skip": "only 15% on Polymarket US"
+  },
+  {
+   "name": "0x9f15613ebf1f36d4bc679e1211d1fc567cf9bdb3",
+   "wallet": "0x9f15613ebf1f36d4bc679e1211d1fc567cf9bdb3",
+   "win": 0.89,
+   "us": 0.15,
+   "pnl_month": 101967.35626737066,
+   "pnl_all": 177291.721401,
+   "per_day": 168.51171390455684,
+   "rank": 61.425000000000004,
    "skip": "only 15% on Polymarket US"
   },
   {
    "name": "newwman",
    "wallet": "0xf163625aa894e79b73629926992e142b740eca34",
-   "win": 0.682,
+   "win": 0.686,
    "us": 0.225,
-   "pnl_month": 45405.01151800001,
-   "pnl_all": 166639.246885,
-   "per_day": 53.50428281967571,
-   "rank": 60.9725,
+   "pnl_month": 39299.706229857016,
+   "pnl_all": 170143.078204,
+   "per_day": 47.36182571067406,
+   "rank": 61.11750000000001,
    "skip": "only 22% on Polymarket US"
   },
   {
-   "name": "0xdbdd45150249e229eB4cA8aa48A30Dca21Faa5de-1757094771846",
-   "wallet": "0xdbdd45150249e229eb4ca8aa48a30dca21faa5de",
-   "win": 0.742,
-   "us": 0.2,
-   "pnl_month": 82453.03413033258,
-   "pnl_all": 858172.303783,
-   "per_day": 967.1353093937495,
-   "rank": 60.96999999999999,
-   "skip": "only 20% on Polymarket US"
+   "name": "Tokenn",
+   "wallet": "0x55d94368a50750f264cf42096e9034315d9c832c",
+   "win": 0.686,
+   "us": 0.2125,
+   "pnl_month": 83906.29984081502,
+   "pnl_all": 149791.695678,
+   "per_day": 56.272640945380374,
+   "rank": 60.06375000000001,
+   "skip": "only 21% on Polymarket US"
   },
   {
    "name": "0xfC0847fe2Ea938D6e2624650eB29eF8d8142A137-1771999665274",
    "wallet": "0xfc0847fe2ea938d6e2624650eb29ef8d8142a137",
    "win": 0.564,
    "us": 0.525,
-   "pnl_month": 56193.77367200001,
+   "pnl_month": 53680.18654999999,
    "pnl_all": 475643.107742,
    "per_day": 99.58896498940715,
    "rank": 59.656757375579716,
    "skip": "win rate 56%"
   },
   {
-   "name": "mooseborzoii",
-   "wallet": "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d",
-   "win": 0.71,
-   "us": 0.3125,
-   "pnl_month": 1443245.5960464487,
-   "pnl_all": 1391112.063785,
-   "per_day": 986.7970213349172,
-   "rank": 58.84115473807524,
-   "skip": null
-  },
-  {
-   "name": "primm",
-   "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
-   "win": 0.742,
-   "us": 0.175,
-   "pnl_month": 704483.4791869997,
-   "pnl_all": 3359950.953187,
-   "per_day": 125.04812326502966,
-   "rank": 58.7925,
-   "skip": "only 18% on Polymarket US"
-  },
-  {
-   "name": "ribalka",
-   "wallet": "0xe59f2ab1b26b403f95b9df6e18ea66b395010d08",
-   "win": 0.702,
-   "us": 0.2625,
-   "pnl_month": 95842.60689896253,
-   "pnl_all": 186286.939537,
-   "per_day": 26.155282458887168,
-   "rank": 57.75969942008757,
-   "skip": "sells most buys within an hour"
+   "name": "BoomLaLa",
+   "wallet": "0xe40172522c7c64afa2d052ddae6c92cd0f417b88",
+   "win": 0.72,
+   "us": 0.225,
+   "pnl_month": 37402.89834164499,
+   "pnl_all": 654895.49785,
+   "per_day": 221.1460690262406,
+   "rank": 58.571054075835825,
+   "skip": "only 22% on Polymarket US"
   },
   {
    "name": "tony1919",
@@ -321,81 +211,15 @@
    "skip": "no trades for 3+ days"
   },
   {
-   "name": "Sunshine.Smile",
-   "wallet": "0xd3b034d7bfb2473fb252d0414646d9786bac329e",
-   "win": 0.53,
-   "us": 0.7875,
-   "pnl_month": 187964.8722416643,
-   "pnl_all": 659497.225675,
-   "per_day": 227.57203813938787,
-   "rank": 56.28306042943043,
-   "skip": "win rate 53%"
-  },
-  {
-   "name": "one8tyfive",
-   "wallet": "0xcf6c5492124794394dd9eac46498a8babbe47e66",
-   "win": 0.832,
-   "us": 0.1125,
-   "pnl_month": 45264.72707258347,
-   "pnl_all": 1139839.2283080001,
-   "per_day": 166.96103855949727,
-   "rank": 56.105000000000004,
-   "skip": "only 11% on Polymarket US"
-  },
-  {
-   "name": "RegardedMoney",
-   "wallet": "0x5c3a1a602848565bb16165fcd460b00c3d43020b",
-   "win": 0.524,
-   "us": 0.9125,
-   "pnl_month": 9599.979600000002,
-   "pnl_all": 1240287.826084,
-   "per_day": 45.924615593958364,
-   "rank": 56.08269173460869,
-   "skip": "win rate 52%"
-  },
-  {
-   "name": "GeorgeRe",
-   "wallet": "0x87da2f16cf98af9b3e2f6ba6d9c4c470815b53d1",
-   "win": 0.896,
-   "us": 0.0875,
-   "pnl_month": 84924.74642319049,
-   "pnl_all": 155188.68242599998,
-   "per_day": 71.41333941669187,
-   "rank": 55.69500000000001,
-   "skip": "only 9% on Polymarket US"
-  },
-  {
-   "name": "Woaifacai",
-   "wallet": "0x9b89ef1f344d3e17b37ccdff3bccf62d04f04244",
-   "win": 0.6572769953051644,
-   "us": 0.275,
-   "pnl_month": 44069.350633999995,
-   "pnl_all": 669166.526995,
-   "per_day": 4.927545687587672,
-   "rank": 55.65997486445571,
-   "skip": "sells most buys within an hour"
-  },
-  {
    "name": "0x5b100dBef7Ec223ACF02717598789Ef90b679659-1770806179314",
    "wallet": "0x5b100dbef7ec223acf02717598789ef90b679659",
    "win": 0.964,
    "us": 0.05,
-   "pnl_month": 38106.422732999985,
-   "pnl_all": 67404.325569,
-   "per_day": 32.645929951809464,
+   "pnl_month": 46319.712207263496,
+   "pnl_all": 68426.486615,
+   "per_day": 31.541111868000446,
    "rank": 54.01,
    "skip": "only 5% on Polymarket US"
-  },
-  {
-   "name": "dsasdaas",
-   "wallet": "0x1e52bbdf389526f57abc62641d518868f4c5eb43",
-   "win": 0.7719298245614035,
-   "us": 0.1125,
-   "pnl_month": 60015.72400000002,
-   "pnl_all": 246404.399299,
-   "per_day": 96.96752036991313,
-   "rank": 53.04035087719298,
-   "skip": "only 11% on Polymarket US"
   },
   {
    "name": "Macks22",
@@ -406,36 +230,25 @@
    "pnl_all": 600997.470539,
    "per_day": 3.623198129892995,
    "rank": 52.93282585470086,
-   "skip": "only 11% on Polymarket US"
+   "skip": "no trades for 3+ days"
   },
   {
    "name": "Reformedx",
    "wallet": "0x64c4a7437742d07356774cad6d55dcd9cf411018",
    "win": 0.956,
-   "us": 0.025,
-   "pnl_month": 66435.34667345801,
-   "pnl_all": 64570.528497,
-   "per_day": 166.64802163338206,
-   "rank": 51.345,
-   "skip": "only 2% on Polymarket US"
-  },
-  {
-   "name": "anyjezz",
-   "wallet": "0xd0551fc6236560d9e1628ed48c169091406b28d0",
-   "win": 0.544,
-   "us": 0.6375,
-   "pnl_month": 10989.984193040003,
-   "pnl_all": 69252.49821,
-   "per_day": 24.976642214225585,
-   "rank": 50.66239512103041,
-   "skip": "win rate 54%"
+   "us": 0.0125,
+   "pnl_month": 79374.0144022,
+   "pnl_all": 69346.063525,
+   "per_day": 155.26220263873861,
+   "rank": 50.122499999999995,
+   "skip": "only 1% on Polymarket US"
   },
   {
    "name": "therealdragonwarrior",
    "wallet": "0xe3763d38ba82a745900800ec11af21128f0e5149",
    "win": 0.5,
    "us": 0.375,
-   "pnl_month": 47067.05932707502,
+   "pnl_month": 47018.36875955001,
    "pnl_all": 80294.744527,
    "per_day": 142.6505260238147,
    "rank": 50.072962367235306,
@@ -446,7 +259,7 @@
    "wallet": "0x04d5524a0a5af2eca6e39e03defc261d42fe66d8",
    "win": 0.9904761904761905,
    "us": 0.0,
-   "pnl_month": 33315.503307629995,
+   "pnl_month": 29335.170873215,
    "pnl_all": 937492.956114,
    "per_day": 1497.8676190145973,
    "rank": 49.76190476190476,
@@ -455,16 +268,227 @@
   {
    "name": "Barbozaaa321",
    "wallet": "0xc1de5ffb02d2b354932ccf5e31172545965e21f5",
-   "win": 0.9739413680781759,
+   "win": 0.9747634069400631,
    "us": 0.0,
-   "pnl_month": 56968.32385491449,
-   "pnl_all": 166926.053557,
-   "per_day": 223.74493077891202,
-   "rank": 49.34853420195439,
+   "pnl_month": 68490.46015517399,
+   "pnl_all": 169590.816811,
+   "per_day": 516.2338826284908,
+   "rank": 49.369085173501574,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "para-Vision",
+   "wallet": "0x676c1bb692c76b57b06f1b93817515acfa5ce139",
+   "win": 0.574468085106383,
+   "us": 0.25,
+   "pnl_month": 161171.01286077,
+   "pnl_all": 198022.318953,
+   "per_day": 189.80000702962988,
+   "rank": 48.76437926738393,
+   "skip": "win rate 57%"
+  },
+  {
+   "name": "spartachio",
+   "wallet": "0xf7c2664cb29240811d6a89dd3960ebbc03a79b8d",
+   "win": 0.854,
+   "us": 0.025,
+   "pnl_month": 10436.008467000003,
+   "pnl_all": 135128.577057,
+   "per_day": 30.54773791172269,
+   "rank": 48.6675,
+   "skip": "only 2% on Polymarket US"
+  },
+  {
+   "name": "GeorgeRe",
+   "wallet": "0x87da2f16cf98af9b3e2f6ba6d9c4c470815b53d1",
+   "win": 0.896,
+   "us": 0.0125,
+   "pnl_month": 79220.49587246147,
+   "pnl_all": 148194.070728,
+   "per_day": 71.19068061256944,
+   "rank": 48.585,
+   "skip": "only 1% on Polymarket US"
+  },
+  {
+   "name": "esportsbetter1",
+   "wallet": "0x866056133a70de9282a080758858d1a0c8b393ed",
+   "win": 0.9414414414414415,
+   "us": 0.0,
+   "pnl_month": 151027.26883428986,
+   "pnl_all": 273970.051514,
+   "per_day": 57.70448358494447,
+   "rank": 48.53603603603604,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "JohnLKellyJr",
+   "wallet": "0xddc38b82423310f5bbf2e2dc58745661a624029c",
+   "win": 0.934,
+   "us": 0.0,
+   "pnl_month": 39457.5871410003,
+   "pnl_all": 331237.949985,
+   "per_day": 2549.1237387148167,
+   "rank": 48.35,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "jizzbucket57",
+   "wallet": "0xc49fe658479db29e1a2fefebf0735f657dca9e05",
+   "win": 0.928,
+   "us": 0.0,
+   "pnl_month": 23018.685629,
+   "pnl_all": 257229.57357,
+   "per_day": 18.71195074252226,
+   "rank": 48.2,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "gregbeast",
+   "wallet": "0x4980930da4ad1194d4f0fd5e29f17b70a42e5709",
+   "win": 0.944,
+   "us": 0.0,
+   "pnl_month": 12443.236189000023,
+   "pnl_all": 86781.73633,
+   "per_day": 82.91301043322048,
+   "rank": 48.08275862068965,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "diceking",
+   "wallet": "0x3db4c677e267cba4982c8d286c5544c72220d69b",
+   "win": 0.58,
+   "us": 0.3625,
+   "pnl_month": 25689.412092750004,
+   "pnl_all": 122201.948831,
+   "per_day": 45.67711565932062,
+   "rank": 48.050535638996784,
+   "skip": "win rate 58%"
+  },
+  {
+   "name": "Zywoo123",
+   "wallet": "0xc44f432b014f36679e13615f95996eac32bbd49f",
+   "win": 0.908,
+   "us": 0.0,
+   "pnl_month": 106462.1968480405,
+   "pnl_all": 182868.604252,
+   "per_day": 87.2383606458062,
+   "rank": 47.7,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "COMEONDUDE",
+   "wallet": "0x054964a95e2cb3fc2105a62a1edf3da44979c052",
+   "win": 0.6666666666666666,
+   "us": 0.1125,
+   "pnl_month": 201857.21760500013,
+   "pnl_all": 630802.883677,
+   "per_day": 62.28526362382008,
+   "rank": 47.48521505376344,
+   "skip": "no trades for 3+ days"
+  },
+  {
+   "name": "anyjezz",
+   "wallet": "0xd0551fc6236560d9e1628ed48c169091406b28d0",
+   "win": 0.544,
+   "us": 0.5625,
+   "pnl_month": 9982.216815940003,
+   "pnl_all": 66948.348608,
+   "per_day": 25.03385655252503,
+   "rank": 46.866022637614165,
+   "skip": "win rate 54%"
+  },
+  {
+   "name": "Gooooooollllllllll",
+   "wallet": "0xda3a9b7afff7b44ad4fd75308723194e0a11381f",
+   "win": 0.872,
+   "us": 0.0,
+   "pnl_month": 109206.8248129551,
+   "pnl_all": 489320.273276,
+   "per_day": 237.60546492569333,
+   "rank": 46.8,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "whatyouknowboutlove",
+   "wallet": "0x8d9f8127677a6c64219b1ba5ecd126043551787a",
+   "win": 0.8717948717948718,
+   "us": 0.0,
+   "pnl_month": 63617.134294999996,
+   "pnl_all": 102373.216044,
+   "per_day": 29.727866158540365,
+   "rank": 46.794871794871796,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "mpyh",
+   "wallet": "0x695d8d90deae05ea1e07d3804130ff9564fd0d7c",
+   "win": 0.862,
+   "us": 0.0,
+   "pnl_month": 14407.278946266486,
+   "pnl_all": 107230.724744,
+   "per_day": 127.94389423304743,
+   "rank": 46.55,
+   "skip": "only 0% on Polymarket US"
+  },
+  {
+   "name": "ScroooogeMcDuck",
+   "wallet": "0xc35049bc7b6bd28a49a40b261466ca91aad63669",
+   "win": 0.566,
+   "us": 0.4625,
+   "pnl_month": 86060.66819999997,
+   "pnl_all": 363913.370972,
+   "per_day": 3.63720680703254,
+   "rank": 46.311929488471186,
+   "skip": "no trades for 3+ days"
+  },
+  {
+   "name": "BAPEHUK",
+   "wallet": "0x9e04fe528bcfab08c348f98a05a80c8606a528a9",
+   "win": 0.768,
+   "us": 0.025,
+   "pnl_month": 11168.232095999998,
+   "pnl_all": 132011.871413,
+   "per_day": 31.652734334644137,
+   "rank": 45.82666666666667,
+   "skip": "only 2% on Polymarket US"
+  },
+  {
+   "name": "one8tyfive",
+   "wallet": "0xcf6c5492124794394dd9eac46498a8babbe47e66",
+   "win": 0.832,
+   "us": 0.0,
+   "pnl_month": 39924.18110699998,
+   "pnl_all": 1123552.241321,
+   "per_day": 183.82196502276497,
+   "rank": 45.8,
    "skip": "only 0% on Polymarket US"
   }
  ],
  "history": [
+  {
+   "at": 1792241959,
+   "out": "CyberScore.live",
+   "wallet": "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2",
+   "why": "only 0% of recent bets on Polymarket US"
+  },
+  {
+   "at": 1792241959,
+   "out": "momijidan",
+   "wallet": "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0",
+   "why": "only 0% of recent bets on Polymarket US"
+  },
+  {
+   "at": 1792241959,
+   "in": "humbleboy",
+   "wallet": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
+   "why": "63% win rate, 75% on Polymarket US, $50,588 this month"
+  },
+  {
+   "at": 1792241959,
+   "in": "mooseborzoii",
+   "wallet": "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d",
+   "why": "71% win rate, 62% on Polymarket US, $1,356,291 this month"
+  },
   {
    "at": 1792159143,
    "out": "ethanaz",
