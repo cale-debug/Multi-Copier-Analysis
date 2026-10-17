@@ -1,6 +1,6 @@
 {
- "target": "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2",
- "target_label": "CyberScore.live",
+ "target": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
+ "target_label": "humbleboy",
  "size_mode": "5",
  "min_bet": 1.0,
  "max_bet": 5.0,
@@ -22,7 +22,7 @@
  "paper_start_bank": 3000.0,
  "max_exposure_pct": 50.0,
  "max_drawdown_pct": 25.0,
- "reset_paper": false,
+ "reset_paper": true,
  "books": [
   {
    "id": "ic4cream",
@@ -35,12 +35,6 @@
    "id": "0x20d6",
    "label": "0x20D6",
    "target": "0x20d6436849f930584892730c7f96ebb2ac763856",
-   "halted": false
-  },
-  {
-   "id": "momijidan",
-   "label": "momijidan",
-   "target": "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0",
    "halted": false
   },
   {
@@ -82,6 +76,12 @@
    "label": "vibing123",
    "target": "0x6b97ebe911d7f2e5e3e8c4a0faad4a5c7c0b8d30",
    "halted": false
+  },
+  {
+   "id": "mooseborzoii",
+   "label": "mooseborzoii",
+   "target": "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d",
+   "halted": false
   }
  ],
  "roster_dropped": {
@@ -92,6 +92,8 @@
   "0x924379a79c64b77ad5816ad362122a5f6228658e": 1791988328,
   "0x9c3ce009c9b039956665cecc4cd14de862b5e8c9": 1791988328,
   "0xf28e42d20e4826f2b10a24bc952001697947cab2": 1792159143,
-  "0x38337de21ff0bb0a11a40761507d51e318d633d1": 1792159143
+  "0x38337de21ff0bb0a11a40761507d51e318d633d1": 1792159143,
+  "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2": 1792241959,
+  "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0": 1792241959
  }
 }
