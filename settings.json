@@ -32,12 +32,6 @@
    "pinned": true
   },
   {
-   "id": "0x20d6",
-   "label": "0x20D6",
-   "target": "0x20d6436849f930584892730c7f96ebb2ac763856",
-   "halted": false
-  },
-  {
    "id": "askilika",
    "label": "askilika",
    "target": "0x0979bad57d7a1403db89cbcd9c52bf43f2138d9b",
@@ -66,21 +60,27 @@
    "pinned": true
   },
   {
-   "id": "raybanman",
-   "label": "raybanman",
-   "target": "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62",
-   "halted": false
-  },
-  {
-   "id": "ohwhenthereds",
-   "label": "OhWhenTheReds",
-   "target": "0x918b42a06ff25eaaa4a79eca9da6a9de46f4ea63",
-   "halted": false
-  },
-  {
    "id": "zywoo123",
    "label": "Zywoo123",
    "target": "0xc44f432b014f36679e13615f95996eac32bbd49f",
+   "halted": false
+  },
+  {
+   "id": "edzachary",
+   "label": "EdZachary",
+   "target": "0xe5b70fd855af9258d9463992e4f1ed7987905ee3",
+   "halted": false
+  },
+  {
+   "id": "kaneanalytics",
+   "label": "KaneAnalytics",
+   "target": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
+   "halted": false
+  },
+  {
+   "id": "peyz-biggest-fan",
+   "label": "PEYZ-BIGGEST-FAN",
+   "target": "0xdaef2be2a19ad331737d06545f85615b094554e9",
    "halted": false
   }
  ],
@@ -96,6 +96,9 @@
   "0x3413c803c3a6efc8d963afbce2dcee48d3738ff2": 1792241959,
   "0x1c0180ddfa25ce792b1efb724215cd7cd012e7d0": 1792241959,
   "0x6b97ebe911d7f2e5e3e8c4a0faad4a5c7c0b8d30": 1792329581,
-  "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d": 1792505981
+  "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d": 1792505981,
+  "0x20d6436849f930584892730c7f96ebb2ac763856": 1792593019,
+  "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62": 1792593019,
+  "0x918b42a06ff25eaaa4a79eca9da6a9de46f4ea63": 1792593019
  }
 }
