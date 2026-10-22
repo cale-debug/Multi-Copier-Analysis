@@ -66,12 +66,6 @@
    "halted": false
   },
   {
-   "id": "edzachary",
-   "label": "EdZachary",
-   "target": "0xe5b70fd855af9258d9463992e4f1ed7987905ee3",
-   "halted": false
-  },
-  {
    "id": "kaneanalytics",
    "label": "KaneAnalytics",
    "target": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
@@ -81,6 +75,12 @@
    "id": "peyz-biggest-fan",
    "label": "PEYZ-BIGGEST-FAN",
    "target": "0xdaef2be2a19ad331737d06545f85615b094554e9",
+   "halted": false
+  },
+  {
+   "id": "0xf201a19b43471261a3c1ba9247335d",
+   "label": "0xF201A19b43471261A3c1Ba9247335d55270e527e-1763824114616",
+   "target": "0xf201a19b43471261a3c1ba9247335d55270e527e",
    "halted": false
   }
  ],
@@ -99,6 +99,7 @@
   "0x1f3a646ce5cbe2c70270e7a46161d89b7c7b895d": 1792505981,
   "0x20d6436849f930584892730c7f96ebb2ac763856": 1792593019,
   "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62": 1792593019,
-  "0x918b42a06ff25eaaa4a79eca9da6a9de46f4ea63": 1792593019
+  "0x918b42a06ff25eaaa4a79eca9da6a9de46f4ea63": 1792593019,
+  "0xe5b70fd855af9258d9463992e4f1ed7987905ee3": 1792679536
  }
 }
