@@ -60,27 +60,27 @@
    "pinned": true
   },
   {
-   "id": "zywoo123",
-   "label": "Zywoo123",
-   "target": "0xc44f432b014f36679e13615f95996eac32bbd49f",
-   "halted": false
-  },
-  {
    "id": "kaneanalytics",
    "label": "KaneAnalytics",
    "target": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
    "halted": false
   },
   {
-   "id": "peyz-biggest-fan",
-   "label": "PEYZ-BIGGEST-FAN",
-   "target": "0xdaef2be2a19ad331737d06545f85615b094554e9",
-   "halted": false
-  },
-  {
    "id": "0xf201a19b43471261a3c1ba9247335d",
    "label": "0xF201A19b43471261A3c1Ba9247335d55270e527e-1763824114616",
    "target": "0xf201a19b43471261a3c1ba9247335d55270e527e",
+   "halted": false
+  },
+  {
+   "id": "georgere",
+   "label": "GeorgeRe",
+   "target": "0x87da2f16cf98af9b3e2f6ba6d9c4c470815b53d1",
+   "halted": false
+  },
+  {
+   "id": "yabanci",
+   "label": "yabanci",
+   "target": "0x285faa3e3d1465cf3ff1bff1e1d14891f5b8495f",
    "halted": false
   }
  ],
@@ -100,6 +100,8 @@
   "0x20d6436849f930584892730c7f96ebb2ac763856": 1792593019,
   "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62": 1792593019,
   "0x918b42a06ff25eaaa4a79eca9da6a9de46f4ea63": 1792593019,
-  "0xe5b70fd855af9258d9463992e4f1ed7987905ee3": 1792679536
+  "0xe5b70fd855af9258d9463992e4f1ed7987905ee3": 1792679536,
+  "0xc44f432b014f36679e13615f95996eac32bbd49f": 1792764947,
+  "0xdaef2be2a19ad331737d06545f85615b094554e9": 1792764947
  }
 }
