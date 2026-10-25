@@ -507,7 +507,7 @@ function renderState() {
   const hp = his.pnl || {};
   const sgn = (x) => (x === undefined ? "?" : usd(x));
   $("hisline").textContent = his.since ? `> his record since we started copying: ${his.buys} buys · ${his.sells} sells · ${usd(his.usd)} traded · P&L ${sgn(hp.since_copy)}  |  today ${sgn(hp.day)} · month ${sgn(hp.month)} · all-time ${sgn(hp.all)}` : "";
-  drawEquity(state.equity || []);
+  drawEquity(state, equity);
   renderReport();
   const wantLive = settings && settings.mode === "live" && (settings.live_book || "main") === BOOK;
   $("modebar").textContent = live ? "LIVE MODE // REAL MONEY" : wantLive ? "LIVE REQUESTED // STILL PAPER: " + (state.live_error || "starting up") : "PAPER MODE // NO REAL MONEY";
@@ -564,17 +564,29 @@ function drawCompare(list, rows) {
   g.globalAlpha = 1; g.shadowBlur = 0;
 }
 
-function drawEquity(pts) {
+function drawEquity(st, equityNow) {
+  // One step per closed trade (start bank plus each net result, oldest first), so every win and
+  // loss shows; a dashed tail runs to today's equity, which includes open positions.
   const c = $("eq"), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = 120;
   c.width = w * dpr; c.height = h * dpr; const g = c.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, w, h);
-  if (pts.length < 2) return;
-  const ys = pts.map((p) => p[1]), lo = Math.min(...ys), hi = Math.max(...ys), span = hi - lo || 1;
-  const x = (i) => (i / (pts.length - 1)) * (w - 4) + 2, y = (v) => h - 8 - ((v - lo) / span) * (h - 20);
-  g.beginPath(); pts.forEach((p, i) => (i ? g.lineTo(x(i), y(p[1])) : g.moveTo(x(i), y(p[1]))));
+  const closed = (st.closed || []).slice().reverse();
+  const pts = [st.start_bank];
+  closed.forEach((r) => pts.push(pts[pts.length - 1] + r.net));
+  const all = pts.concat(equityNow), lo = Math.min(...all), hi = Math.max(...all), span = hi - lo || 1;
+  const n = pts.length, x = (i) => (i / n) * (w - 10) + 4, y = (v) => h - 8 - ((v - lo) / span) * (h - 20);
+  g.strokeStyle = "rgba(79,134,168,.5)"; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(0, y(st.start_bank)); g.lineTo(w, y(st.start_bank)); g.stroke();
+  // Today's equity, dashed, from the last closed trade.
+  g.strokeStyle = "rgba(46,230,255,.6)"; g.beginPath(); g.moveTo(x(n - 1), y(pts[n - 1])); g.lineTo(x(n), y(equityNow)); g.stroke(); g.setLineDash([]);
+  if (n < 2) return;
+  g.beginPath(); pts.forEach((v, i) => (i ? (g.lineTo(x(i), y(pts[i - 1])), g.lineTo(x(i), y(v))) : g.moveTo(x(0), y(v))));
   g.strokeStyle = "#2ee6ff"; g.lineWidth = 2; g.shadowColor = "#2ee6ff"; g.shadowBlur = 8; g.stroke();
-  g.shadowBlur = 0; g.lineTo(x(pts.length - 1), h); g.lineTo(x(0), h); g.closePath();
+  g.shadowBlur = 0; g.lineTo(x(n - 1), h); g.lineTo(x(0), h); g.closePath();
   const grad = g.createLinearGradient(0, 0, 0, h); grad.addColorStop(0, "rgba(46,230,255,.25)"); grad.addColorStop(1, "rgba(46,230,255,0)");
   g.fillStyle = grad; g.fill();
+  // A dot on each trade: green for a win, red for a loss.
+  if (n <= 200) closed.forEach((r, i) => {
+    g.fillStyle = r.net >= 0 ? "#39ffb0" : "#ff3b5c"; g.beginPath(); g.arc(x(i + 1), y(pts[i + 1]), 2.5, 0, 7); g.fill();
+  });
 }
 
 async function refresh() {

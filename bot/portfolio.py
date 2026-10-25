@@ -255,11 +255,25 @@ def mark(state: dict) -> None:
     """Append an equity point (cash + marked positions), thinned to one per 10 min."""
     now = int(time.time())
     eq = round(state["bank"] + exposure(state), 2)
-    if state["equity"] and now - state["equity"][-1][0] < 600:
+    # Same 10-minute slot: update the last point. (Comparing against the last point's own
+    # time, which each save moved forward, kept frequent saves from ever adding a point.)
+    if state["equity"] and now // 600 == state["equity"][-1][0] // 600:
         state["equity"][-1] = [now, eq]
     else:
         state["equity"].append([now, eq])
     del state["equity"][:-MAX_EQUITY_POINTS]
+
+
+def trade_curve(state: dict) -> list:
+    """[ts, equity] after each closed trade (start bank plus every net result, oldest first),
+    ending at the current equity so open positions show too."""
+    pts = [[state.get("started_at") or 0, round(state["start_bank"], 2)]]
+    run = state["start_bank"]
+    for r in reversed(state.get("closed") or []):
+        run += r["net"]
+        pts.append([r["closed"], round(run, 2)])
+    pts.append([int(time.time()), round(state["bank"] + exposure(state), 2)])
+    return pts
 
 
 def log(state: dict, msg: str) -> None:

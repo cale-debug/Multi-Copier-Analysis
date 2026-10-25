@@ -21,7 +21,7 @@ import time
 from typing import Optional
 
 from . import live_us, polymarket as pm
-from .portfolio import (DEFAULT_SETTINGS, add_total, bet_size, buy, exposure, log, mark, new_state,
+from .portfolio import (DEFAULT_SETTINGS, add_total, bet_size, buy, exposure, log, mark, new_state, trade_curve,
                         sell, should_copy_buy, skip, slip_ok, taker_fee, track_slip, TAKER_FEE)
 from .store import LocalStore, Store
 
@@ -505,8 +505,9 @@ class Bot:
         """One line for the dashboard's comparison of books."""
         st = self.state
         eq = round(st["bank"] + exposure(st), 2)
-        pts = st.get("equity") or []
-        step = max(1, len(pts) // 120)
+        pts = trade_curve(st)
+        mid = pts[1:-1]
+        mid = mid[::-1][::max(1, -(-len(mid) // 118))][::-1]   # thin to ~120 points, keeping the latest trade
         t = st.get("totals") or {}
         return {"id": self.book_id, "label": self.settings.get("target_label") or self.target()[:10],
                 "target": self.target(), "mode": self.mode, "halted": bool(self.settings.get("halted")),
@@ -516,7 +517,7 @@ class Bot:
                 "exposure": round(exposure(st), 2), "fees": round(st.get("fees", 0.0), 2),
                 "wagered": round(t.get("gross_in", 0.0), 2), "us": st.get("us"),
                 "copies": sum(1 for r in st["trades"] if r["side"] == "BUY"), "skipped": sum(st["skipped"].values()),
-                "heartbeat": st.get("heartbeat"), "curve": pts[::step][-120:], "path": self.state_path()}
+                "heartbeat": st.get("heartbeat"), "curve": pts[:1] + mid + pts[-1:], "path": self.state_path()}
 
     # ------------------------------------------------------------ upkeep --
     def kill_switch(self) -> None:
