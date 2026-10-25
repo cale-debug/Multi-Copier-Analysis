@@ -99,6 +99,14 @@ def main():
                                    "sides": [s.get("description") or s.get("name") or s.get("title") for s in (x.get("marketSides") or [])]}
                                   for x in e.get("markets") or []]}
     print("event lookups:", Counter(v["code"] for v in events.values()).most_common())
+    print("still missed, by reason:", Counter(m["why"] for m in misses).most_common())
+    side = [m for m in misses if m["why"] == "outcome doesn't match a US side"]
+    print(f"\n## {len(side)} misses where US has the bet but the outcome didn't map to a side; sample:")
+    for m in side[:25]:
+        us_ev = live_us.us_event(m["event"] or "") or ""
+        print(f"  intl: {m['slug']} | {m['title']} | {m['outcome']}   US event: {us_ev}")
+        for u, q in live_us._us_markets(us_ev)[:3]:
+            print(f"    US: {u} | {q} | {live_us._sides(u) if u.startswith('aec-') else ''}")
     with open("us_misses.jsonl", "w") as f:
         for m in misses:
             f.write(json.dumps({**m, "us_event": events.get(m["event"] or "")}) + "\n")
