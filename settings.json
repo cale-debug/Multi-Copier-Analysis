@@ -1,7 +1,7 @@
 {
  "target": "0x4b59e178095b9bb5ba97598244f2ca8b02fc3aa6",
  "target_label": "humbleboy",
- "size_mode": "5",
+ "size_mode": "50",
  "min_bet": 1.0,
  "max_bet": 5.0,
  "prop_pct": 1.0,
@@ -110,5 +110,6 @@
   "0xe5b70fd855af9258d9463992e4f1ed7987905ee3": 1792679536,
   "0xc44f432b014f36679e13615f95996eac32bbd49f": 1792764947,
   "0xdaef2be2a19ad331737d06545f85615b094554e9": 1792764947
- }
+ },
+ "max_per_market": 100
 }
