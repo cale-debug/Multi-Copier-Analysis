@@ -63,7 +63,8 @@
       "id": "kaneanalytics",
       "label": "KaneAnalytics",
       "target": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
-      "halted": false
+      "halted": false,
+      "pinned": true
     },
     {
       "id": "0xf201a19b43471261a3c1ba9247335d",
