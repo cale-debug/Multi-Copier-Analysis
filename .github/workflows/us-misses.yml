@@ -1,0 +1,21 @@
+name: US match misses
+on:
+  workflow_dispatch:
+    inputs:
+      wallets:
+        description: Wallets to check (space-separated); blank = every trader on the roster
+        required: false
+jobs:
+  misses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python tools/us_misses.py ${{ inputs.wallets }} | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: us-misses
+          path: us_misses.jsonl
