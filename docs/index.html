@@ -456,6 +456,12 @@ function renderReport() {
     : "Nothing closed yet.";
 }
 
+// Game time in the viewer's own time zone, e.g. "Sat Oct 25, 7:00 PM".
+function when(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "" : d.toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
 function renderState() {
   if (!state) return;
   const posVal = Object.values(state.positions).reduce((a, p) => a + p.shares * (p.cur ?? p.avg), 0);
@@ -486,7 +492,7 @@ function renderState() {
   const rows = Object.values(state.positions).sort((a, b) => b.cost - a.cost).slice(0, 300);
   $("positions").innerHTML = rows.map((p) => {
     const now = p.cur ?? p.avg, val = p.shares * now, pl = val - p.cost;
-    return `<tr><td>${esc(p.outcome)}</td><td>${esc(p.title)}${p.us === false ? ' <span class="muted">· not on US</span>' : ""}</td><td class="n">${cents(p.avg)}</td><td class="n">${cents(now)}</td><td class="n">${usd(p.cost)}</td><td class="n hide-sm ${pl >= 0 ? "up" : "down"}">${usd(pl)}</td></tr>`;
+    return `<tr><td>${esc(p.outcome)}</td><td>${esc(p.title)}${p.us === false ? ' <span class="muted">· not on US</span>' : ""}${p.starts ? ` <span class="muted">· ${esc(when(p.starts))}</span>` : ""}</td><td class="n">${cents(p.avg)}</td><td class="n">${cents(now)}</td><td class="n">${usd(p.cost)}</td><td class="n hide-sm ${pl >= 0 ? "up" : "down"}">${usd(pl)}</td></tr>`;
   }).join("") || `<tr><td colspan="6" class="muted">No open positions yet</td></tr>`;
 
   $("feed").innerHTML = state.trades.slice(0, 40).map((t) => {

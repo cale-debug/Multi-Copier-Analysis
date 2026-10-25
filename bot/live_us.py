@@ -225,6 +225,20 @@ def _slug_variants(event_slug: str, base: str) -> list:
     return list(dict.fromkeys(out))
 
 
+@lru_cache(maxsize=2000)
+def event_start(event_slug: str) -> str:
+    """When the game starts (ISO UTC), from its Polymarket US event; "" if unknown."""
+    ev = us_event(event_slug)
+    if not ev:
+        return ""
+    try:
+        r = requests.get(f"{GATEWAY}/v1/events/slug/{ev}", timeout=15)
+        body = r.json() if r.ok else {}
+    except (requests.RequestException, ValueError):
+        return ""
+    return str((body.get("event") or body).get("startDate") or "")
+
+
 def _line(code: str) -> float:
     return float(code.replace("pt", "."))
 

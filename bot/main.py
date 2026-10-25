@@ -600,6 +600,8 @@ class Bot:
             pos = self.state["positions"].get(asset)
             if pos is None:
                 continue
+            if "starts" not in pos and pos.get("event_slug"):
+                pos["starts"] = live_us.event_start(pos["event_slug"])   # game time, for the dashboard
             res = self.resolution(asset, pos)
             if res is not None:
                 sell(self.state, asset, 1.0, res, "resolved")
