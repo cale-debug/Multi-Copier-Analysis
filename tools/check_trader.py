@@ -65,6 +65,28 @@ for b in buys:
     oc[b["conditionId"]].add(b["asset"])
 print(f"- red flags: sold within 1h of buying {flip/max(1,len(buys)):.0%}; bought both sides in {sum(len(v)>1 for v in oc.values())}/{len(oc)} markets")
 
+# Event level: does he bet against himself across markets of one game (both teams, over and under)?
+def kind(slug):
+    return ("spread" if "-spread-" in slug else "total" if "-total-" in slug or "-ou-" in slug
+            else "prop" if any(k in slug for k in ("-btts", "-player-", "-first-", "-map-", "-game-")) else "winner")
+
+
+ev_out = defaultdict(lambda: defaultdict(set))
+for b in buys:
+    ev_out[b.get("eventSlug") or b.get("slug")][kind(b.get("slug") or "")].add((b.get("conditionId"), b.get("outcome")))
+both = [e for e, k in ev_out.items() if any(len({o for _, o in v}) > 1 for v in k.values())]
+print(f"- events with opposite outcomes of the same market type (both teams / over+under): {len(both)}/{len(ev_out)}")
+for e in both[:8]:
+    print(f"  - {e}: " + "; ".join(f"{k}: {sorted({o for _, o in v})}" for k, v in ev_out[e].items()))
+print(f"- market types bought: {Counter(kind(b.get('slug') or '') for b in buys).most_common()}")
+per_ev = Counter(b.get("eventSlug") for b in buys)
+print(f"- buys per event: median {st.median(per_ev.values()):.0f}, max {max(per_ev.values())}; sold before resolution in "
+      f"{len({s['asset'] for s in sells} & {b['asset'] for b in buys})}/{len({b['asset'] for b in buys})} outcomes he bought")
+usd_ev = defaultdict(float)
+for b in buys:
+    usd_ev[b.get("eventSlug")] += f(b.get("usdcSize"))
+print(f"- $ per event: median ${st.median(usd_ev.values()):,.0f}, max ${max(usd_ev.values()):,.0f}")
+
 cats = Counter()
 for b in buys:
     s = (b.get("eventSlug") or b.get("slug") or "").split("-")[0]
