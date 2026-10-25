@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       wallets:
-        description: Wallets to check (space-separated); blank = every trader on the roster
+        description: Wallets to check (space-separated); blank = every trader on the roster; 'probe' = probe US API shapes
         required: false
 jobs:
   misses:
@@ -14,8 +14,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      - run: python tools/us_probe.py
+        if: ${{ inputs.wallets == 'probe' }}
       - run: python tools/us_misses.py ${{ inputs.wallets }} | tee -a "$GITHUB_STEP_SUMMARY"
+        if: ${{ inputs.wallets != 'probe' }}
       - uses: actions/upload-artifact@v4
+        if: ${{ inputs.wallets != 'probe' }}
         with:
           name: us-misses
           path: us_misses.jsonl
