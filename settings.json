@@ -35,15 +35,13 @@
       "id": "askilika",
       "label": "askilika",
       "target": "0x0979bad57d7a1403db89cbcd9c52bf43f2138d9b",
-      "halted": false,
-      "pinned": true
+      "halted": false
     },
     {
       "id": "juice-fruit",
       "label": "juice-fruit",
       "target": "0x5fdd66ffd0325d4e8d1d86fbec50caa31770a747",
-      "halted": false,
-      "pinned": true
+      "halted": false
     },
     {
       "id": "thehighlife",
