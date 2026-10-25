@@ -311,6 +311,18 @@ def translate(slug: str, event_slug: str, outcome: str, title: str = "") -> Tupl
                 hits.append((us, False))
         return hits[0] if len(hits) == 1 else (None, None)
 
+    m = re.fullmatch(r"-game(\d+)", tail)
+    if m and not yes_no:                                 # esports "Game 2 Winner": US asks "Will A win Game 2 vs B?"
+        hits = []
+        for us in (f"astatc-{ev}-game{m.group(1)}", f"astatc-{ev}-map{m.group(1)}"):
+            q = re.match(r"\s*Will (.+?) win (?:Game|Map) \d+ vs\.? (.+?)\?*\s*$", markets.get(us, ""), flags=re.I)
+            if not q:
+                continue
+            a, b = same_team(o, q.group(1)), same_team(o, q.group(2))
+            if a != b:
+                hits.append((us, a))
+        return hits[0] if len(hits) == 1 else (None, None)
+
     if yes_no and re.fullmatch(r"-[a-z0-9]+", tail):     # soccer "Will X win on ...?" / "... end in a draw?"
         draw = "draw" in (title or "").lower()
         win = re.match(r"\s*Will (.+?) win", title or "", flags=re.I)

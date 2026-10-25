@@ -562,3 +562,20 @@ def test_translate_refuses_when_unsure(monkeypatch):
     assert live_us.same_team("PRV", "PARIVISION") and live_us.same_team("Rockets", "HOU Rockets")
     assert live_us._slug_variants("cs2-g2-aur1-2026-10-25", "cs2-g2-aur1-2026-10-25")[:3] == \
         ["cs2-g2-aur1-2026-10-25", "cs2-g2-aur-2026-10-25", "cs2-g-aur1-2026-10-25"]
+
+
+def test_translate_esports_game_winner(monkeypatch):
+    dota, cs = "dota2-og-gl-2026-10-26", "cs2-vit-mglz-2026-10-25"
+    _us_fixture(monkeypatch,
+                {dota: [(f"aec-{dota}", "..."), (f"astatc-{dota}-game1", "Will OG win Game 1 vs GamerLegion?"),
+                        (f"astatc-{dota}-game2", "Will OG win Game 2 vs GamerLegion?")],
+                 cs: [(f"aec-{cs}", "..."), (f"astatc-{cs}-map1", "Will Vitality win Map 1 vs TheMongolz?")]},
+                {f"astatc-{dota}-game2": ((("yes",), True), (("no",), False)),
+                 f"astatc-{cs}-map1": ((("yes",), True), (("no",), False))})
+    t = "Dota 2: OG vs GamerLegion - Game 2 Winner"
+    assert live_us.match(f"{dota}-game2", dota, "OG", t) == (f"astatc-{dota}-game2", True, "")
+    assert live_us.match(f"{dota}-game2", dota, "GamerLegion", t) == (f"astatc-{dota}-game2", False, "")
+    assert live_us.match(f"{dota}-game3", dota, "OG", t)[2] == "not on Polymarket US"
+    assert live_us.match(f"{cs}-game1", cs, "TheMongolz", "Counter-Strike: Vitality vs TheMongolz - Map 1 Winner") == \
+        (f"astatc-{cs}-map1", False, "")
+    assert live_us.match(f"{cs}-game1", cs, "Somebody Else", "x")[0] is None
