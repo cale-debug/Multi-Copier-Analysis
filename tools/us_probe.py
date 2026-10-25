@@ -56,3 +56,15 @@ code, b = get("/v1/market/slug/asc-nba-hou-atl-2026-10-24-neg-1pt5")
 print("\n## market detail", code, json.dumps(b)[:2500])
 code, b = get("/v1/market/slug/tsc-nba-hou-atl-2026-10-24-219pt5")
 print("\n## market detail", code, json.dumps(b)[:1500])
+
+print("\n## esports per-game markets")
+for q in ["OG", "Liquid", "Team Spirit", "BetBoom", "Vitality", "PARIVISION"]:
+    code, b = get("/v1/search", {"query": q})
+    for e in (b.get("events", []) if isinstance(b, dict) else [])[:4]:
+        if not e.get("slug", "").startswith(("dota2-", "cs2-")):
+            continue
+        code, ev = get(f"/v1/events/slug/{e['slug']}")
+        ev = (ev.get("event") or ev) if isinstance(ev, dict) else {}
+        print(f"\n### {e['slug']} | {e.get('title')}")
+        for m in ev.get("markets") or []:
+            print("  ", m.get("slug"), "|", m.get("question"), "|", [(x.get("description"), x.get("long")) for x in m.get("marketSides") or []])
