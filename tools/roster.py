@@ -25,7 +25,7 @@ import requests
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scan_leaderboard as scan  # noqa: E402
 
-ROSTER = 10
+ROSTER = 11          # 10 picked from the boards, plus room for one trader Cale adds by hand
 QUIET_DAYS = 3
 MIN_US = 0.25          # share of their recent buys that are on Polymarket US, to join
 KEEP_US = 0.15         # ...and to stay

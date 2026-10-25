@@ -37,7 +37,7 @@ RUN_SECONDS = int(float(os.environ.get("RUN_MINUTES") or 340) * 60)
 WRITE_GAP = float(os.environ.get("WRITE_GAP_SECONDS", "6"))
 SETTINGS_EVERY = int(os.environ.get("SETTINGS_SECONDS", "15"))
 SUMMARY_EVERY = int(os.environ.get("SUMMARY_SECONDS", "60"))
-MAX_BOOKS = int(os.environ.get("MAX_BOOKS", "10"))
+MAX_BOOKS = int(os.environ.get("MAX_BOOKS", "11"))
 MAIN = "main"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s [%(threadName)s] %(message)s")
