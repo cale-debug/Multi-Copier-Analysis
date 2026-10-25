@@ -28,6 +28,7 @@ DEFAULT_SETTINGS = {
     "once_per_market": False,  # True: copy his first buy of an outcome, not every fill after it
     "skip_both_sides": False,  # True: don't buy the other side of a market we already hold
     "copy_sells": True,
+    "max_per_market": 0,       # most $ in one outcome across all entries (0 = no limit)
     "max_slip_cents": 1.0,     # skip a buy if we'd pay more than this many cents above his price
     "max_delay_s": 60,         # skip a buy we only see this many seconds after he made it
     "max_spread_cents": 5.0,   # skip when the US book's bid/ask spread is wider than this

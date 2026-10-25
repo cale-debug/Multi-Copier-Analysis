@@ -265,6 +265,13 @@ class Bot:
             if asset not in self.state["positions"] and len(self.state["positions"]) >= MAX_POSITIONS:
                 return skip(self.state, "too many open positions")
             usd = bet_size(self.settings, his_usd, self.his_median())
+            cap = float(self.settings.get("max_per_market") or 0)
+            if cap > 0:
+                # Most we'll stake on one outcome across entries: later entries shrink to fit, then stop.
+                room = cap - (self.state["positions"].get(asset) or {}).get("gross_in", 0.0)
+                if room < min(usd, 1.0):
+                    return skip(self.state, "max per market reached")
+                usd = round(min(usd, room), 2)
             equity = self.state["bank"] + exposure(self.state)
             if equity < self.state["start_bank"] * (1 - float(self.settings.get("max_drawdown_pct", 25)) / 100):
                 self.halt(f"Account down {self.settings.get('max_drawdown_pct', 25)}% from start; halted")

@@ -490,3 +490,13 @@ def test_scaled_sizing_follows_his_conviction(tmp_path, monkeypatch):
     bot.state["his_sizes"] = [100.0] * 30
     bot.copy(dict(TRADE, usdcSize=400), 1)
     assert abs(bot.state["positions"]["A"]["gross_in"] - 4) < 1e-9
+
+
+def test_max_per_market_allows_two_entries_then_stops(tmp_path, monkeypatch):
+    bot = _bot(tmp_path, monkeypatch)
+    bot.settings.update(size_mode="50", max_per_market=100, max_exposure_pct=100)
+    for i in range(3):
+        bot.copy(dict(TRADE, transactionHash=f"h{i}"), 1)
+    pos = bot.state["positions"]["A"]
+    assert abs(pos["gross_in"] - 100) < 1e-6                      # two $50 entries
+    assert bot.state["skipped"].get("max per market reached") == 1
