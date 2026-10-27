@@ -467,7 +467,7 @@ def test_roster_drops_quiet_losing_and_non_us_traders():
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools"))
     import roster
     now = 10_000_000
-    good = {"last_trade": now - 3600, "pnl_month": 5000, "pnl_all": 90000, "us": 0.4, "win": 0.8, "flip": 0.0}
+    good = {"last_trade": now - 3600, "pnl_month": 5000, "pnl_all": 90000, "us": 0.4, "win": 0.8, "flip": 0.0, "closed": 150}
     assert roster.why_drop({}, good, None, now) is None and roster.eligible(good, now) is None
     assert "no trades" in roster.why_drop({}, {**good, "last_trade": now - 4 * 86400}, None, now)
     assert "this month" in roster.why_drop({}, {**good, "pnl_month": -10}, None, now)
@@ -476,6 +476,8 @@ def test_roster_drops_quiet_losing_and_non_us_traders():
     assert "paper copy" in roster.why_drop({}, good, trial, now)
     assert roster.why_drop({}, good, {**trial, "started_at": now - 86400}, now) is None   # too soon to judge
     assert roster.eligible({**good, "flip": 0.9}, now) == "sells most buys within an hour"
+    assert roster.eligible({**good, "closed": 60}, now) == "only 60 closed positions"
+    assert roster.eligible({**good, "win": 0.65}, now) == "win rate 65%"
     assert roster.slug("Kch-Temp", {"kch-temp"}) == "kch-temp-2"
 
 
