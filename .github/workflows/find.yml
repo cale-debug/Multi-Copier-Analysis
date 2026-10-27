@@ -1,0 +1,28 @@
+name: Find traders
+on:
+  workflow_dispatch:
+    inputs:
+      pool:
+        description: Traders pulled from each Sports/Esports leaderboard
+        default: "500"
+      min_closed:
+        description: Minimum closed positions
+        default: "100"
+      min_win:
+        description: Minimum win rate (0-1)
+        default: "0.70"
+      min_us:
+        description: Minimum share of recent bets the bot can copy on Polymarket US (0-1)
+        default: "0.50"
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -u tools/find_traders.py --pool "${{ inputs.pool }}" --min-closed "${{ inputs.min_closed }}" --min-win "${{ inputs.min_win }}" --min-us "${{ inputs.min_us }}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: cat finds.json
