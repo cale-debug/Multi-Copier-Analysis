@@ -1,4 +1,4 @@
-"""Keep the roster at the best 10 traders who can be copied on Polymarket US.
+"""Keep the roster at the best 25 traders who can be copied on Polymarket US.
 
     python tools/roster.py            # GitHub Actions: reads/writes settings.json on the data branch
     python tools/roster.py --dry-run  # print what would change
@@ -25,11 +25,12 @@ import requests
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scan_leaderboard as scan  # noqa: E402
 
-ROSTER = 11          # 10 picked from the boards, plus room for one trader Cale adds by hand
+ROSTER = 25          # Cale (2026-10-27): fill up to the bot's 25 books
 QUIET_DAYS = 3
 MIN_US = 0.25          # share of their recent buys that are on Polymarket US, to join
 KEEP_US = 0.15         # ...and to stay
-MIN_WIN = 0.60
+MIN_WIN = 0.70         # Cale (2026-10-27): 70%+ win rate and 100+ closed positions to join
+MIN_CLOSED = 100
 MAX_FLIP = 0.5         # sells most buys within an hour: a delayed copy misses that
 MIN_TRIAL_DAYS = 7
 MIN_TRIAL_CLOSED = 30
@@ -92,6 +93,8 @@ def eligible(r, now):
         return f"only {r['us']:.0%} on Polymarket US"
     if r["win"] < MIN_WIN:
         return f"win rate {r['win']:.0%}"
+    if r["closed"] < MIN_CLOSED:
+        return f"only {r['closed']} closed positions"
     if r["flip"] > MAX_FLIP:
         return "sells most buys within an hour"
     return None
