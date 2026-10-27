@@ -645,7 +645,7 @@ $("lockBtn").onclick = async () => {
   if (confirm(`Copy ${label} (${wallet.slice(0, 10)}…) in this book from now on?`)) saveSettings(bookPatch(b.id, { target: wallet, label }), `Target ${label}`);
 };
 $("addBook").onclick = async () => {
-  if (bookList().length >= 10) return toast("10 traders is the limit.");
+  if (bookList().length >= 25) return toast("25 traders is the limit.");
   const text = prompt("Trader to add: Polymarket username or 0x wallet");
   if (!text) return;
   const [wallet, label] = await resolveTarget(text);
