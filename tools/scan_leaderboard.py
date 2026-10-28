@@ -12,7 +12,13 @@ import statistics as st
 import time
 from collections import defaultdict
 
+import os
+import sys
+
 import requests
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from bot import live_us  # noqa: E402
 
 D = "https://data-api.polymarket.com"
 US = "https://gateway.polymarket.us"
@@ -49,16 +55,10 @@ def board(period, n):
     return out
 
 
-_events = {}
-
-
 def on_us(b):
-    ev, slug = b.get("eventSlug") or "", b.get("slug") or ""
-    if ev not in _events:
-        body = get(f"{US}/v1/events/slug/{ev}") if ev else None
-        event = (body or {}).get("event") or body or {}
-        _events[ev] = [m.get("slug", "") for m in event.get("markets") or []]
-    return any(s == slug or s.endswith("-" + slug) for s in _events[ev])
+    """Whether the copier could have copied this buy on Polymarket US (its own matcher, incl. renamed games)."""
+    _, _, why = live_us.match(b.get("slug") or "", b.get("eventSlug") or "", b.get("outcome"), b.get("title") or "")
+    return why in ("", "US market closed")
 
 
 def score(w, name, lb):
