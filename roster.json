@@ -1,104 +1,20 @@
 {
- "updated": 1793725490,
+ "updated": 1793812580,
  "changes": [
   {
-   "out": "Sisyphus-",
-   "wallet": "0xf3ce7f04dde4f8c5aed19a20e5ecd8520e5ca57a",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "0xb4F978",
-   "wallet": "0xb4f978be63cdf75554b0b46a4262a6db597cc9a7",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "Zywoo123",
-   "wallet": "0xc44f432b014f36679e13615f95996eac32bbd49f",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "yadens",
-   "wallet": "0x6e553015227ef6f43683a866bec357d6608368d0",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "BTCGambler247",
-   "wallet": "0x31c518f864d1394361fec967b3daa9093a86ede4",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "CORGII",
-   "wallet": "0x79ae097215202b5d01f98e4479fb219102469a4a",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "0x11e5d9",
-   "wallet": "0x11e5d9276b80c28d2167db68ae4cff6d8e09337e",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "vibing123",
-   "wallet": "0x6b97ebe911d7f2e5e3e8c4a0faad4a5c7c0b8d30",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "Reformedx",
-   "wallet": "0x64c4a7437742d07356774cad6d55dcd9cf411018",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "mde4life1986",
-   "wallet": "0x54ce7dd357766fc3255645e55ef41edd51cc9f80",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "primm",
-   "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "Babooou",
-   "wallet": "0xbdd21cd4bdfa6764c6f43ea6d154c4b414d86657",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "GeorgeRe",
-   "wallet": "0x87da2f16cf98af9b3e2f6ba6d9c4c470815b53d1",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "dsasdaas",
-   "wallet": "0x1e52bbdf389526f57abc62641d518868f4c5eb43",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "monkeymashingkeyboard",
-   "wallet": "0x684baa57c338c2549aec0aa3f034f695d72a8409",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "esportsbetter1",
-   "wallet": "0x866056133a70de9282a080758858d1a0c8b393ed",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "cat3xcat3x",
-   "wallet": "0x08c263965a9cbec5e83ac1d6f14b9bbc957bc023",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "maytopmay",
-   "wallet": "0x6ed3695f9263b56a533a87083e0d60e33add186c",
-   "why": "no recent trading history"
-  },
-  {
-   "out": "solo88888",
-   "wallet": "0xab444cf90149a8128eb510099e5917f521547ffe",
+   "out": "ic4cream",
+   "wallet": "0x27f738fe203827445690339104aae35b20bc44b0",
    "why": "no recent trading history"
   }
  ],
  "ranking": [],
  "history": [
+  {
+   "at": 1793812580,
+   "out": "ic4cream",
+   "wallet": "0x27f738fe203827445690339104aae35b20bc44b0",
+   "why": "no recent trading history"
+  },
   {
    "at": 1793725490,
    "out": "Sisyphus-",
