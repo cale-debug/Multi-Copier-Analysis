@@ -1,14 +1,20 @@
 {
- "updated": 1793899546,
+ "updated": 1793983629,
  "changes": [
   {
-   "out": "THEHIGHLIFE",
-   "wallet": "0x8c0b024c17831a0dde038547b7e791ae6a0d7aa5",
+   "out": "theowalcott",
+   "wallet": "0x7ad71d79a3bb90d0a87a06500fa0fe11663842aa",
    "why": "no recent trading history"
   }
  ],
  "ranking": [],
  "history": [
+  {
+   "at": 1793983629,
+   "out": "theowalcott",
+   "wallet": "0x7ad71d79a3bb90d0a87a06500fa0fe11663842aa",
+   "why": "no recent trading history"
+  },
   {
    "at": 1793899546,
    "out": "THEHIGHLIFE",
