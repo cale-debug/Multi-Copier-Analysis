@@ -1,14 +1,20 @@
 {
- "updated": 1793983629,
+ "updated": 1794066025,
  "changes": [
   {
-   "out": "theowalcott",
-   "wallet": "0x7ad71d79a3bb90d0a87a06500fa0fe11663842aa",
+   "out": "KaneAnalytics",
+   "wallet": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
    "why": "no recent trading history"
   }
  ],
  "ranking": [],
  "history": [
+  {
+   "at": 1794066025,
+   "out": "KaneAnalytics",
+   "wallet": "0x7e3a1f95c558f39a51ff334d789e3e039b553246",
+   "why": "no recent trading history"
+  },
   {
    "at": 1793983629,
    "out": "theowalcott",
